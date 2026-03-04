@@ -344,21 +344,57 @@
     }
 
     /* ══════════════════════════════════════
-       STATS BAR
+       STATS BAR — redesigned
     ══════════════════════════════════════ */
     .stats-bar {
       background: var(--bg2);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 1.8rem 0;
+      padding: 0;
     }
-    .stat-item { text-align:center; padding:0.5rem; }
+    .stats-inner {
+      display: flex;
+      align-items: stretch;
+    }
+    .stat-item {
+      flex: 1;
+      padding: 2.2rem 1.5rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .stat-item:hover::before { transform: scaleX(1); }
+    .stat-item:hover { background: var(--bg3); }
     .stat-num {
-      font-family:'Syne', sans-serif;
-      font-size:2rem; font-weight:600;
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
       color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.4rem;
     }
-    .stat-label { font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; color:var(--text2); margin-top:4px; }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text2);
+    }
+    @media(max-width: 576px) {
+      .stats-inner { flex-wrap: wrap; }
+      .stat-item { flex: 50%; border-bottom: 1px solid var(--border); }
+      .stat-item:nth-child(even) { border-right: none; }
+    }
 
     /* ══════════════════════════════════════
        PRODUCTS SECTION
@@ -505,103 +541,219 @@
     .p-card:hover .quick-view { transform: translateY(0); }
 
     /* ══════════════════════════════════════
-       PRODUCT POPUP / MODAL
+       PRODUCT POPUP / MODAL — redesigned
     ══════════════════════════════════════ */
     .modal-overlay {
-      position:fixed; inset:0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      z-index:2000;
-      display:flex; align-items:center; justify-content:center;
-      padding:1.5rem;
-      opacity:0; pointer-events:none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
       transition: opacity 0.35s;
     }
-    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
     .modal-box {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      max-width:680px; width:100%;
-      max-height:90vh; overflow-y:auto;
-      transform: scale(0.9) translateY(20px);
-      transition: transform 0.35s cubic-bezier(.23,1,.32,1);
-      position:relative;
+      border-radius: 20px;
+      max-width: 700px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      transform: scale(0.92) translateY(24px);
+      transition: transform 0.4s cubic-bezier(.23,1,.32,1);
+      position: relative;
+      overflow: hidden;
     }
     .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+
+    /* top accent line */
+    .modal-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
     .modal-close {
-      position:sticky; top:1rem;
-      float:right; margin:1rem 1rem 0 0;
-      width:36px; height:36px;
-      border-radius:50%;
-      border:1px solid var(--border);
+      position: absolute; top: 1rem; right: 1rem;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
       background: var(--bg3);
-      color:var(--text);
-      font-size:1rem;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      z-index:10;
-      transition:all 0.2s;
+      color: var(--text2);
+      font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
     }
-    .modal-close:hover { border-color:var(--accent); color:var(--accent); }
-    .modal-thumb {
-      height:260px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:6rem;
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* two-column layout */
+    .modal-layout {
+      display: flex;
+      min-height: 400px;
+    }
+    .modal-left {
+      width: 220px;
+      flex-shrink: 0;
       background: var(--bg2);
-      border-radius:20px 20px 0 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
     }
-    .modal-body { padding:2rem; }
-    .modal-cat { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
-    .modal-title { font-family:'Syne',sans-serif; font-size:2rem; font-weight:600; margin-bottom:1rem; }
-    .modal-desc { color:var(--text2); line-height:1.8; font-size:0.9rem; margin-bottom:1.5rem; }
-    .modal-features { list-style:none; margin-bottom:2rem; }
+    .modal-left::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at center, var(--glow), transparent 70%);
+    }
+    .modal-right {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .modal-cat {
+      font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      line-height: 1.2; margin-bottom: 0.8rem;
+    }
+    .modal-stars { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.8rem; }
+    .modal-desc {
+      color: var(--text2); line-height: 1.8;
+      font-size: 0.85rem; margin-bottom: 1.2rem;
+    }
+
+    .modal-features {
+      list-style: none;
+      margin-bottom: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
     .modal-features li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size:0.85rem; color:var(--text2);
-      display:flex; align-items:center; gap:0.7rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      font-size: 0.82rem; color: var(--text2);
+      padding: 0.5rem 0.8rem;
+      background: var(--bg2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
-    .modal-features li::before { content:'✦'; color:var(--accent); font-size:0.6rem; }
-    .modal-footer { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-    .modal-price { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:600; color:var(--accent); }
-    .modal-buy {
+    .modal-features li .fi {
+      width: 20px; height: 20px;
+      border-radius: 50%;
       background: var(--accent);
-      color:#000;
-      border:none;
-      padding:0.85rem 2.5rem;
-      border-radius:100px;
-      font-family:'DM Sans',sans-serif;
-      font-size:0.85rem; font-weight:600;
-      letter-spacing:1px; cursor:pointer;
-      transition:all 0.25s;
-      flex:1;
+      color: #000;
+      font-size: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
     }
-    .modal-buy:hover { background:var(--accent2); transform:translateY(-2px); }
+
+    .modal-footer {
+      margin-top: auto;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .modal-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .modal-buy {
+      flex: 1;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 600;
+      letter-spacing: 0.5px; cursor: pointer;
+      transition: all 0.25s;
+    }
+    .modal-buy:hover { background: var(--accent2); transform: translateY(-2px); }
+    .modal-wishlist {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-wishlist:hover { border-color: var(--accent); color: var(--accent); }
+
+    @media(max-width: 576px) {
+      .modal-layout { flex-direction: column; }
+      .modal-left { width: 100%; height: 160px; font-size: 4rem; border-right: none; border-bottom: 1px solid var(--border); }
+      .modal-right { padding: 1.2rem; }
+    }
 
     /* ══════════════════════════════════════
-       FEATURES STRIP
+       FEATURES STRIP — redesigned
     ══════════════════════════════════════ */
     .features-strip {
-      background: var(--bg2);
-      border-top:1px solid var(--border);
-      border-bottom:1px solid var(--border);
-      padding:3.5rem 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 0;
     }
-    .feat-item { text-align:center; padding:1rem; }
-    .feat-icon {
-      width:56px; height:56px;
-      border-radius:50%;
-      border:1px solid var(--accent);
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.4rem;
-      margin:0 auto 1rem;
-      color: var(--accent);
-      transition:all 0.3s;
+    .feat-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(.23,1,.32,1);
+      height: 100%;
     }
-    .feat-item:hover .feat-icon { background:var(--accent); color:#000; }
-    .feat-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:600; margin-bottom:0.3rem; }
-    .feat-desc { font-size:0.78rem; color:var(--text2); line-height:1.6; }
+    .feat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px var(--glow);
+    }
+    .feat-icon-box {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .feat-card:hover .feat-icon-box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .feat-text {}
+    .feat-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+    .feat-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
 
     /* ══════════════════════════════════════
        TESTIMONIALS
@@ -801,15 +953,19 @@
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box" id="modalBox">
     <button class="modal-close" id="modalClose">✕</button>
-    <div class="modal-thumb" id="modalThumb">📊</div>
-    <div class="modal-body">
-      <p class="modal-cat" id="modalCat">Templates</p>
-      <h2 class="modal-title" id="modalTitle">Product Title</h2>
-      <p class="modal-desc" id="modalDesc">Description here.</p>
-      <ul class="modal-features" id="modalFeatures"></ul>
-      <div class="modal-footer">
-        <div class="modal-price" id="modalPrice">$19</div>
-        <button class="modal-buy" id="modalBuy">Add to Cart →</button>
+    <div class="modal-layout">
+      <div class="modal-left" id="modalThumb">📊</div>
+      <div class="modal-right">
+        <p class="modal-cat" id="modalCat">Templates</p>
+        <h2 class="modal-title" id="modalTitle">Product Title</h2>
+        <div class="modal-stars">★★★★★ <span style="font-size:0.75rem;color:var(--text2);margin-left:4px;">5.0 rating</span></div>
+        <p class="modal-desc" id="modalDesc">Description here.</p>
+        <ul class="modal-features" id="modalFeatures"></ul>
+        <div class="modal-footer">
+          <div class="modal-price" id="modalPrice">$19</div>
+          <button class="modal-buy" id="modalBuy">Add to Cart →</button>
+          <button class="modal-wishlist">♡</button>
+        </div>
       </div>
     </div>
   </div>
@@ -878,12 +1034,12 @@
 
 <!-- STATS -->
 <div class="stats-bar reveal">
-  <div class="container">
-    <div class="row g-3">
-      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">2,400+</div><div class="stat-label">Happy Customers</div></div></div>
-      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Digital Products</div></div></div>
-      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Average Rating</div></div></div>
-      <div class="col-6 col-md-3"><div class="stat-item"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div></div>
+  <div class="container-fluid px-0">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">2,400+</div><div class="stat-label">Happy Customers</div></div>
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Digital Products</div></div>
+      <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Average Rating</div></div>
+      <div class="stat-item"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
     </div>
   </div>
 </div>
@@ -1080,11 +1236,47 @@
 <!-- FEATURES -->
 <section class="features-strip reveal" id="features">
   <div class="container">
-    <div class="row g-4">
-      <div class="col-6 col-md-3"><div class="feat-item"><div class="feat-icon">⚡</div><p class="feat-title">Instant Download</p><p class="feat-desc">Files delivered immediately after purchase</p></div></div>
-      <div class="col-6 col-md-3"><div class="feat-item"><div class="feat-icon">♾️</div><p class="feat-title">Lifetime Access</p><p class="feat-desc">Buy once, keep forever with free updates</p></div></div>
-      <div class="col-6 col-md-3"><div class="feat-item"><div class="feat-icon">🔒</div><p class="feat-title">Secure Payments</p><p class="feat-desc">SSL encrypted, 100% safe checkout</p></div></div>
-      <div class="col-6 col-md-3"><div class="feat-item"><div class="feat-icon">↩️</div><p class="feat-title">30-Day Refund</p><p class="feat-desc">Not satisfied? Full money back guaranteed</p></div></div>
+    <div class="text-center mb-4 reveal">
+      <p class="section-eyebrow">Why Choose Us</p>
+      <h2 class="section-title">Built for <strong>Serious Creators</strong></h2>
+    </div>
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <div class="feat-card">
+          <div class="feat-icon-box">⚡</div>
+          <div class="feat-text">
+            <p class="feat-title">Instant Download</p>
+            <p class="feat-desc">Files delivered immediately after purchase</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="feat-card">
+          <div class="feat-icon-box">♾️</div>
+          <div class="feat-text">
+            <p class="feat-title">Lifetime Access</p>
+            <p class="feat-desc">Buy once, keep forever with free updates</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="feat-card">
+          <div class="feat-icon-box">🔒</div>
+          <div class="feat-text">
+            <p class="feat-title">Secure Payments</p>
+            <p class="feat-desc">SSL encrypted, 100% safe checkout</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="feat-card">
+          <div class="feat-icon-box">↩️</div>
+          <div class="feat-text">
+            <p class="feat-title">30-Day Refund</p>
+            <p class="feat-desc">Not satisfied? Full money back guaranteed</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1295,7 +1487,7 @@
     document.getElementById('modalDesc').textContent = p.desc;
     document.getElementById('modalPrice').textContent = sym + Number(val).toLocaleString();
     const ul = document.getElementById('modalFeatures');
-    ul.innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
+    ul.innerHTML = p.features.map(f => `<li><span class="fi">✓</span>${f}</li>`).join('');
   }
 
   function openModal(id) {
