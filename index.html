@@ -5,40 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DigitalDen — Premium Digital Products</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     /* ══════════════════════════════════════
        CSS VARIABLES — DARK / LIGHT THEMES
     ══════════════════════════════════════ */
     [data-theme="dark"] {
-      --bg:        #080808;
-      --bg2:       #111111;
-      --bg3:       #1a1a1a;
-      --surface:   #151515;
-      --border:    rgba(255,255,255,0.07);
-      --text:      #f0ece4;
-      --text2:     #888;
-      --text3:     #555;
-      --gold:      #c8a84b;
-      --gold2:     #e8cc7a;
-      --glow:      rgba(200,168,75,0.15);
-      --card-shadow: 0 30px 80px rgba(0,0,0,0.6);
-      --overlay:   rgba(8,8,8,0.92);
+      --bg:        #060d14;
+      --bg2:       #0b1622;
+      --bg3:       #111f2e;
+      --surface:   #0d1a27;
+      --border:    rgba(0,210,120,0.1);
+      --text:      #e8f4f0;
+      --text2:     #7a9baa;
+      --text3:     #3a5a6a;
+      --accent:    #00c97a;
+      --accent2:   #00f59a;
+      --glow:      rgba(0,201,122,0.12);
+      --card-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      --overlay:   rgba(6,13,20,0.94);
     }
     [data-theme="light"] {
-      --bg:        #f7f4ef;
-      --bg2:       #eeebe4;
-      --bg3:       #e5e1d8;
+      --bg:        #ffffff;
+      --bg2:       #f4f8f6;
+      --bg3:       #e8f2ee;
       --surface:   #ffffff;
       --border:    rgba(0,0,0,0.08);
-      --text:      #1a1a1a;
-      --text2:     #666;
-      --text3:     #aaa;
-      --gold:      #a07828;
-      --gold2:     #c9a84c;
-      --glow:      rgba(160,120,40,0.1);
-      --card-shadow: 0 20px 60px rgba(0,0,0,0.1);
-      --overlay:   rgba(247,244,239,0.95);
+      --text:      #060d14;
+      --text2:     #3a5a6a;
+      --text3:     #9ab5c0;
+      --accent:    #008f55;
+      --accent2:   #00c97a;
+      --glow:      rgba(0,143,85,0.08);
+      --card-shadow: 0 20px 60px rgba(6,13,20,0.08);
+      --overlay:   rgba(255,255,255,0.96);
     }
 
     /* ══════════════════════════════════════
@@ -49,7 +49,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       overflow-x: hidden;
       transition: background 0.4s, color 0.4s;
@@ -60,17 +60,17 @@
     .cursor {
       position: fixed;
       width: 10px; height: 10px;
-      background: var(--gold);
+      background: var(--accent);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       transition: transform 0.1s;
-      mix-blend-mode: difference;
+      mix-blend-mode: normal;
     }
     .cursor-ring {
       position: fixed;
       width: 36px; height: 36px;
-      border: 1.5px solid var(--gold);
+      border: 1.5px solid var(--accent);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
@@ -100,14 +100,14 @@
       transition: all 0.4s;
     }
     .logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Syne', sans-serif;
       font-size: 1.7rem;
       font-weight: 700;
       color: var(--text);
       text-decoration: none;
       letter-spacing: 3px;
     }
-    .logo span { color: var(--gold); }
+    .logo span { color: var(--accent); }
     .nav-center { display:flex; gap:2.5rem; }
     .nav-center a {
       font-size: 0.78rem;
@@ -122,7 +122,7 @@
     .nav-center a::after {
       content:'';
       position:absolute; bottom:-4px; left:0; right:0;
-      height:1px; background: var(--gold);
+      height:1px; background: var(--accent);
       transform: scaleX(0);
       transition: transform 0.3s;
     }
@@ -146,7 +146,7 @@
       border: none;
       background: transparent;
       color: var(--text2);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.75rem;
       font-weight: 500;
       cursor: pointer;
@@ -154,7 +154,7 @@
       letter-spacing: 1px;
     }
     .cur-btn.active {
-      background: var(--gold);
+      background: var(--accent);
       color: #000;
     }
 
@@ -170,27 +170,27 @@
       font-size:1rem;
       transition: all 0.3s;
     }
-    .theme-btn:hover { border-color: var(--gold); }
+    .theme-btn:hover { border-color: var(--accent); }
 
     /* Cart */
     .cart-btn {
       display:flex; align-items:center; gap:8px;
-      background: var(--gold);
+      background: var(--accent);
       color: #000;
       border: none;
       padding: 0.55rem 1.4rem;
       border-radius: 100px;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.8rem;
       font-weight: 600;
       letter-spacing: 1px;
       cursor: pointer;
       transition: all 0.25s;
     }
-    .cart-btn:hover { background: var(--gold2); transform: translateY(-1px); }
+    .cart-btn:hover { background: var(--accent2); transform: translateY(-1px); }
     .cart-count {
       background:#000;
-      color: var(--gold);
+      color: var(--accent);
       width:18px; height:18px;
       border-radius:50%;
       display:flex; align-items:center; justify-content:center;
@@ -243,8 +243,8 @@
 
     .hero-tag {
       display:inline-block;
-      border: 1px solid var(--gold);
-      color: var(--gold);
+      border: 1px solid var(--accent);
+      color: var(--accent);
       font-size: 0.7rem;
       letter-spacing: 4px;
       text-transform: uppercase;
@@ -255,7 +255,7 @@
       opacity:0;
     }
     .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Syne', sans-serif;
       font-size: clamp(3.5rem, 8vw, 7rem);
       font-weight: 300;
       line-height: 1.0;
@@ -265,7 +265,7 @@
     }
     .hero h1 em {
       font-style: italic;
-      color: var(--gold);
+      color: var(--accent);
       font-weight: 600;
     }
     .hero-sub {
@@ -284,12 +284,12 @@
       opacity:0;
     }
     .btn-primary-gold {
-      background: var(--gold);
+      background: var(--accent);
       color: #000;
       border: none;
       padding: 0.85rem 2.5rem;
       border-radius: 100px;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.85rem;
       font-weight: 600;
       letter-spacing: 1px;
@@ -298,14 +298,14 @@
       display:inline-block;
       transition: all 0.3s;
     }
-    .btn-primary-gold:hover { background: var(--gold2); transform: translateY(-3px); box-shadow: 0 15px 40px var(--glow); color:#000; }
+    .btn-primary-gold:hover { background: var(--accent2); transform: translateY(-3px); box-shadow: 0 15px 40px var(--glow); color:#000; }
     .btn-outline-gold {
       background: transparent;
       color: var(--text);
       border: 1px solid var(--border);
       padding: 0.85rem 2.5rem;
       border-radius: 100px;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.85rem;
       font-weight: 400;
       letter-spacing: 1px;
@@ -314,7 +314,7 @@
       display:inline-block;
       transition: all 0.3s;
     }
-    .btn-outline-gold:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-outline-gold:hover { border-color: var(--accent); color: var(--accent); }
 
     /* Scroll indicator */
     .scroll-hint {
@@ -326,7 +326,7 @@
     }
     .scroll-line {
       width:1px; height:50px;
-      background: linear-gradient(var(--gold), transparent);
+      background: linear-gradient(var(--accent), transparent);
       animation: scrollLine 2s ease-in-out infinite;
     }
     @keyframes scrollLine {
@@ -347,9 +347,9 @@
     }
     .stat-item { text-align:center; padding:0.5rem; }
     .stat-num {
-      font-family:'Cormorant Garamond', serif;
+      font-family:'Syne', sans-serif;
       font-size:2rem; font-weight:600;
-      color: var(--gold);
+      color: var(--accent);
     }
     .stat-label { font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; color:var(--text2); margin-top:4px; }
 
@@ -359,10 +359,10 @@
     .section { padding: 6rem 0; position:relative; z-index:2; }
     .section-eyebrow {
       font-size:0.68rem; letter-spacing:4px; text-transform:uppercase;
-      color: var(--gold); margin-bottom:0.6rem;
+      color: var(--accent); margin-bottom:0.6rem;
     }
     .section-title {
-      font-family:'Cormorant Garamond', serif;
+      font-family:'Syne', sans-serif;
       font-size: clamp(2rem, 4vw, 3.2rem);
       font-weight:300; line-height:1.1;
     }
@@ -376,15 +376,15 @@
       border: 1px solid var(--border);
       background: transparent;
       color: var(--text2);
-      font-family:'Outfit',sans-serif;
+      font-family:'DM Sans',sans-serif;
       font-size:0.78rem;
       font-weight:400;
       letter-spacing:1px;
       cursor:pointer;
       transition:all 0.25s;
     }
-    .cat-pill:hover { border-color: var(--gold); color: var(--gold); }
-    .cat-pill.active { background: var(--gold); border-color: var(--gold); color:#000; font-weight:500; }
+    .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-pill.active { background: var(--accent); border-color: var(--accent); color:#000; font-weight:500; }
 
     /* ══ PRODUCT CARD ══ */
     .p-card {
@@ -401,7 +401,7 @@
     .p-card:hover {
       transform: translateY(-8px);
       box-shadow: var(--card-shadow);
-      border-color: var(--gold);
+      border-color: var(--accent);
     }
     .p-card::before {
       content:'';
@@ -433,7 +433,7 @@
       padding:4px 10px; border-radius:100px;
       z-index:2;
     }
-    .badge-new { right:14px; background: var(--gold); color:#000; }
+    .badge-new { right:14px; background: var(--accent); color:#000; }
     .badge-hot { left:14px; background:#e74c3c; color:#fff; }
     .badge-sale { left:14px; background:#2ecc71; color:#000; }
 
@@ -444,10 +444,10 @@
     }
     .card-cat {
       font-size:0.65rem; letter-spacing:3px; text-transform:uppercase;
-      color: var(--gold); margin-bottom:0.5rem;
+      color: var(--accent); margin-bottom:0.5rem;
     }
     .card-name {
-      font-family:'Cormorant Garamond', serif;
+      font-family:'Syne', sans-serif;
       font-size:1.25rem; font-weight:600;
       line-height:1.3; margin-bottom:0.6rem;
     }
@@ -456,35 +456,35 @@
       line-height:1.7; flex:1; margin-bottom:1.2rem;
     }
     .card-meta { display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; }
-    .card-stars { color: var(--gold); font-size:0.75rem; }
+    .card-stars { color: var(--accent); font-size:0.75rem; }
     .card-reviews { font-size:0.72rem; color:var(--text3); }
     .card-footer { display:flex; align-items:center; justify-content:space-between; }
     .price-block {}
     .price-old { font-size:0.78rem; color:var(--text3); text-decoration:line-through; }
     .price-main {
-      font-family:'Cormorant Garamond', serif;
+      font-family:'Syne', sans-serif;
       font-size:1.6rem; font-weight:600;
       color: var(--text); line-height:1;
     }
-    .price-main .cur-sym { font-size:1rem; color:var(--gold); }
+    .price-main .cur-sym { font-size:1rem; color:var(--accent); }
     .add-btn {
       width:42px; height:42px;
       border-radius:50%;
-      border: 1px solid var(--gold);
+      border: 1px solid var(--accent);
       background: transparent;
-      color: var(--gold);
+      color: var(--accent);
       font-size:1.3rem;
       display:flex; align-items:center; justify-content:center;
       cursor:pointer;
       transition:all 0.25s;
       flex-shrink:0;
     }
-    .add-btn:hover { background: var(--gold); color:#000; transform:rotate(90deg); }
+    .add-btn:hover { background: var(--accent); color:#000; transform:rotate(90deg); }
 
     /* Quick view btn */
     .quick-view {
       position:absolute; bottom:0; left:0; right:0;
-      background: var(--gold);
+      background: var(--accent);
       color:#000;
       text-align:center;
       padding:0.7rem;
@@ -536,7 +536,7 @@
       z-index:10;
       transition:all 0.2s;
     }
-    .modal-close:hover { border-color:var(--gold); color:var(--gold); }
+    .modal-close:hover { border-color:var(--accent); color:var(--accent); }
     .modal-thumb {
       height:260px;
       display:flex; align-items:center; justify-content:center;
@@ -545,8 +545,8 @@
       border-radius:20px 20px 0 0;
     }
     .modal-body { padding:2rem; }
-    .modal-cat { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
-    .modal-title { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:600; margin-bottom:1rem; }
+    .modal-cat { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
+    .modal-title { font-family:'Syne',sans-serif; font-size:2rem; font-weight:600; margin-bottom:1rem; }
     .modal-desc { color:var(--text2); line-height:1.8; font-size:0.9rem; margin-bottom:1.5rem; }
     .modal-features { list-style:none; margin-bottom:2rem; }
     .modal-features li {
@@ -555,22 +555,22 @@
       font-size:0.85rem; color:var(--text2);
       display:flex; align-items:center; gap:0.7rem;
     }
-    .modal-features li::before { content:'✦'; color:var(--gold); font-size:0.6rem; }
+    .modal-features li::before { content:'✦'; color:var(--accent); font-size:0.6rem; }
     .modal-footer { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-    .modal-price { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:600; color:var(--gold); }
+    .modal-price { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:600; color:var(--accent); }
     .modal-buy {
-      background: var(--gold);
+      background: var(--accent);
       color:#000;
       border:none;
       padding:0.85rem 2.5rem;
       border-radius:100px;
-      font-family:'Outfit',sans-serif;
+      font-family:'DM Sans',sans-serif;
       font-size:0.85rem; font-weight:600;
       letter-spacing:1px; cursor:pointer;
       transition:all 0.25s;
       flex:1;
     }
-    .modal-buy:hover { background:var(--gold2); transform:translateY(-2px); }
+    .modal-buy:hover { background:var(--accent2); transform:translateY(-2px); }
 
     /* ══════════════════════════════════════
        FEATURES STRIP
@@ -585,15 +585,15 @@
     .feat-icon {
       width:56px; height:56px;
       border-radius:50%;
-      border:1px solid var(--gold);
+      border:1px solid var(--accent);
       display:flex; align-items:center; justify-content:center;
       font-size:1.4rem;
       margin:0 auto 1rem;
-      color: var(--gold);
+      color: var(--accent);
       transition:all 0.3s;
     }
-    .feat-item:hover .feat-icon { background:var(--gold); color:#000; }
-    .feat-title { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:600; margin-bottom:0.3rem; }
+    .feat-item:hover .feat-icon { background:var(--accent); color:#000; }
+    .feat-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:600; margin-bottom:0.3rem; }
     .feat-desc { font-size:0.78rem; color:var(--text2); line-height:1.6; }
 
     /* ══════════════════════════════════════
@@ -607,12 +607,12 @@
       transition:all 0.3s;
       height:100%;
     }
-    .t-card:hover { border-color:var(--gold); transform:translateY(-4px); }
-    .t-stars { color:var(--gold); margin-bottom:1rem; letter-spacing:2px; }
-    .t-quote { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-style:italic; color:var(--text2); line-height:1.8; margin-bottom:1.5rem; }
+    .t-card:hover { border-color:var(--accent); transform:translateY(-4px); }
+    .t-stars { color:var(--accent); margin-bottom:1rem; letter-spacing:2px; }
+    .t-quote { font-family:'Syne',sans-serif; font-size:1.05rem; font-style:italic; color:var(--text2); line-height:1.8; margin-bottom:1.5rem; }
     .t-author { font-weight:500; font-size:0.85rem; }
     .t-role { font-size:0.75rem; color:var(--text3); }
-    .t-divider { width:30px; height:2px; background:var(--gold); margin:0.5rem 0; }
+    .t-divider { width:30px; height:2px; background:var(--accent); margin:0.5rem 0; }
 
     /* ══════════════════════════════════════
        NEWSLETTER
@@ -634,8 +634,8 @@
       pointer-events:none;
     }
     .newsletter-content { position:relative; z-index:1; }
-    .newsletter h2 { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:300; margin-bottom:0.5rem; }
-    .newsletter h2 strong { font-weight:600; color:var(--gold); }
+    .newsletter h2 { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:300; margin-bottom:0.5rem; }
+    .newsletter h2 strong { font-weight:600; color:var(--accent); }
     .newsletter p { color:var(--text2); margin-bottom:2rem; }
     .nl-form { display:flex; max-width:440px; margin:0 auto; }
     .nl-input {
@@ -646,24 +646,24 @@
       border-right:none;
       border-radius:100px 0 0 100px;
       color:var(--text);
-      font-family:'Outfit',sans-serif;
+      font-family:'DM Sans',sans-serif;
       font-size:0.88rem;
       outline:none;
       transition:border-color 0.2s;
     }
-    .nl-input:focus { border-color:var(--gold); }
+    .nl-input:focus { border-color:var(--accent); }
     .nl-btn {
-      background:var(--gold);
+      background:var(--accent);
       color:#000;
       border:none;
       padding:0.85rem 1.8rem;
       border-radius:0 100px 100px 0;
-      font-family:'Outfit',sans-serif;
+      font-family:'DM Sans',sans-serif;
       font-size:0.82rem; font-weight:600;
       letter-spacing:1px; cursor:pointer;
       transition:background 0.2s;
     }
-    .nl-btn:hover { background:var(--gold2); }
+    .nl-btn:hover { background:var(--accent2); }
 
     /* ══════════════════════════════════════
        FOOTER
@@ -673,12 +673,12 @@
       border-top:1px solid var(--border);
       padding:3rem 2rem 2rem;
     }
-    .footer-logo { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:var(--text); letter-spacing:3px; margin-bottom:0.5rem; }
-    .footer-logo span { color:var(--gold); }
+    .footer-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:700; color:var(--text); letter-spacing:3px; margin-bottom:0.5rem; }
+    .footer-logo span { color:var(--accent); }
     .footer-tagline { font-size:0.78rem; color:var(--text3); margin-bottom:0; }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { color:var(--text2); text-decoration:none; font-size:0.8rem; letter-spacing:1px; transition:color 0.2s; }
-    .footer-links a:hover { color:var(--gold); }
+    .footer-links a:hover { color:var(--accent); }
     .footer-bottom { border-top:1px solid var(--border); padding-top:1.5rem; margin-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
     .footer-copy { font-size:0.75rem; color:var(--text3); }
 
@@ -699,13 +699,88 @@
     /* ══ SCROLLBAR ══ */
     ::-webkit-scrollbar { width:4px; }
     ::-webkit-scrollbar-track { background:var(--bg); }
-    ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:4px; }
+    ::-webkit-scrollbar-thumb { background:var(--accent); border-radius:4px; }
+
+    @media(max-width: 576px) {
+      .card-name { font-size: 1rem; }
+      .card-desc { font-size: 0.75rem; }
+      .card-thumb { height: 130px; font-size: 2.8rem; }
+      .card-body { padding: 1rem; }
+      .price-main { font-size: 1.2rem; }
+      .add-btn { width: 34px; height: 34px; font-size: 1rem; }
+      .hero h1 { font-size: 2.6rem; }
+      .modal-title { font-size: 1.5rem; }
+    }
 
     /* ══ MOBILE ══ */
-    @media(max-width:768px) {
-      nav { padding:1rem 1.2rem; }
-      .nav-center { display:none; }
-      .hero h1 { font-size:3rem; }
+    @media(max-width: 768px) {
+      nav { padding: 1rem 1.2rem; position: relative; }
+      .nav-center { display: none; }
+      .hamburger { display: flex; }
+      .nav-right .currency-toggle { display: none; }
+      .nav-right .theme-btn { display: none; }
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--overlay);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      flex-direction: column;
+      gap: 1.2rem;
+      z-index: 499;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-decoration: none;
+      font-weight: 400;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+    .mobile-menu-bottom {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    @media(max-width: 768px) {
+      nav { padding: 1rem 1.2rem; position: relative; }
+      .nav-center { display: none; }
+      .hamburger { display: flex; }
+      .nav-right .currency-toggle { display: none; }
+      .nav-right .theme-btn { display: none; }
     }
   </style>
 </head>
@@ -754,8 +829,26 @@
       <span>Cart</span>
       <span class="cart-count" id="cartCount">0</span>
     </button>
+    <!-- Hamburger -->
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#products" class="mobile-link">Products</a>
+  <a href="#features" class="mobile-link">Features</a>
+  <a href="#reviews" class="mobile-link">Reviews</a>
+  <div class="mobile-menu-bottom">
+    <div class="currency-toggle">
+      <button class="cur-btn-m cur-btn active" data-cur="USD">USD</button>
+      <button class="cur-btn-m cur-btn" data-cur="PKR">PKR</button>
+    </div>
+    <button class="theme-btn" id="themeBtnMobile">🌙</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -815,9 +908,9 @@
     <div class="row g-4" id="productsGrid">
 
       <!-- Card 1 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="templates">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="templates">
         <div class="p-card" data-id="1">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#071828,#0d2d1a);">
             📊
             <span class="badge badge-new">New</span>
           </div>
@@ -842,9 +935,9 @@
       </div>
 
       <!-- Card 2 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="ebooks">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="ebooks">
         <div class="p-card" data-id="2">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#1a2e1a,#162116);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#071828,#0a2416);">
             📘
             <span class="badge badge-hot">Bestseller</span>
           </div>
@@ -869,9 +962,9 @@
       </div>
 
       <!-- Card 3 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="graphics">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="graphics">
         <div class="p-card" data-id="3">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#2e1a2e,#211621);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#0d1a2e,#071828);">
             🎨
           </div>
           <div class="card-body">
@@ -894,9 +987,9 @@
       </div>
 
       <!-- Card 4 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="courses">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="courses">
         <div class="p-card" data-id="4">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#1a2a1a,#0f1f0f);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#081828,#061420);">
             🐍
             <span class="badge badge-new">New</span>
           </div>
@@ -920,9 +1013,9 @@
       </div>
 
       <!-- Card 5 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="tools">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="tools">
         <div class="p-card" data-id="5">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#2e2a1a,#211e0f);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#0b1e2e,#071828);">
             🔧
             <span class="badge badge-sale">−50%</span>
           </div>
@@ -947,9 +1040,9 @@
       </div>
 
       <!-- Card 6 -->
-      <div class="col-sm-6 col-lg-4 reveal product-item" data-cat="templates">
+      <div class="col-6 col-lg-4 reveal product-item" data-cat="templates">
         <div class="p-card" data-id="6">
-          <div class="card-thumb" style="background:linear-gradient(135deg,#1a1a2e,#0f0f1e);">
+          <div class="card-thumb" style="background:linear-gradient(135deg,#060d1e,#091a28);">
             🌐
             <span class="badge badge-sale">−30%</span>
           </div>
@@ -1089,14 +1182,33 @@
     el.addEventListener('mouseleave', () => ring.classList.remove('expand'));
   });
 
+  /* ══ HAMBURGER MENU ══ */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
   /* ══ THEME TOGGLE ══ */
   const themeBtn = document.getElementById('themeBtn');
+  const themeBtnMobile = document.getElementById('themeBtnMobile');
   let isDark = true;
-  themeBtn.addEventListener('click', () => {
+  function toggleTheme() {
     isDark = !isDark;
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-    themeBtn.textContent = isDark ? '🌙' : '☀️';
-  });
+    const icon = isDark ? '🌙' : '☀️';
+    themeBtn.textContent = icon;
+    if(themeBtnMobile) themeBtnMobile.textContent = icon;
+  }
+  themeBtn.addEventListener('click', toggleTheme);
+  if(themeBtnMobile) themeBtnMobile.addEventListener('click', toggleTheme);
 
   /* ══ CURRENCY ══ */
   let curCurrency = 'USD';
@@ -1145,7 +1257,7 @@
       cart++;
       document.getElementById('cartCount').textContent = cart;
       btn.textContent = '✓';
-      btn.style.background = 'var(--gold)';
+      btn.style.background = 'var(--accent)';
       btn.style.color = '#000';
       setTimeout(() => { btn.textContent = '+'; btn.style.background=''; btn.style.color=''; }, 1500);
     });
