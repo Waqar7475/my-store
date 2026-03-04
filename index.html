@@ -102,7 +102,7 @@
     /* ══ TRANSPARENT SURFACES FOR GRADIENT ══ */
     [data-theme="dark"] body { background: #060d14; }
 
-    /* Every surface: same dark semi-transparent glass */
+    /* Cards only - clean float on gradient */
     [data-theme="dark"] .p-card,
     [data-theme="dark"] .t-card,
     [data-theme="dark"] .feat-card,
@@ -113,13 +113,18 @@
       -webkit-backdrop-filter: blur(20px);
       border-color: rgba(0,210,120,0.12) !important;
     }
+
+    /* Section wrappers - fully transparent, no box */
     [data-theme="dark"] .stats-bar,
     [data-theme="dark"] .features-strip,
-    [data-theme="dark"] .newsletter,
+    [data-theme="dark"] .newsletter {
+      background: transparent !important;
+      border-top: 1px solid rgba(0,210,120,0.07) !important;
+      border-bottom: 1px solid rgba(0,210,120,0.07) !important;
+      backdrop-filter: none !important;
+    }
     [data-theme="dark"] footer {
-      background: rgba(4, 10, 18, 0.60) !important;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(4, 10, 18, 0.70) !important;
     }
     [data-theme="dark"] nav {
       background: rgba(4, 10, 18, 0.78) !important;
