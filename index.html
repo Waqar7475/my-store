@@ -56,28 +56,34 @@
       cursor: none;
     }
 
-    /* ══ CUSTOM CURSOR ══ */
-    .cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.1s;
-      mix-blend-mode: normal;
+    /* ══ CUSTOM CURSOR — desktop only ══ */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      .cursor {
+        position: fixed;
+        width: 10px; height: 10px;
+        background: var(--accent);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.1s;
+      }
+      .cursor-ring {
+        position: fixed;
+        width: 36px; height: 36px;
+        border: 1.5px solid var(--accent);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transition: all 0.12s ease;
+        opacity: 0.6;
+      }
+      .cursor-ring.expand { transform: scale(2.2); opacity: 0.3; }
     }
-    .cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 1.5px solid var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transition: all 0.12s ease;
-      opacity: 0.6;
+    @media (pointer: coarse) {
+      .cursor, .cursor-ring { display: none !important; }
+      body { cursor: auto; }
     }
-    .cursor-ring.expand { transform: scale(2.2); opacity:0.3; }
 
     /* ══ GRAIN OVERLAY ══ */
     body::before {
@@ -98,6 +104,7 @@
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       transition: all 0.4s;
+      position: sticky;
     }
     .logo {
       font-family: 'Syne', sans-serif;
@@ -744,8 +751,8 @@
 
     .mobile-menu {
       display: none;
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      top: 65px;
       left: 0; right: 0;
       background: var(--overlay);
       backdrop-filter: blur(20px);
@@ -753,7 +760,7 @@
       padding: 1.5rem 2rem;
       flex-direction: column;
       gap: 1.2rem;
-      z-index: 499;
+      z-index: 498;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
@@ -1162,33 +1169,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  /* ══ CURSOR ══ */
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx=0, my=0, rx=0, ry=0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx-5+'px'; cursor.style.top = my-5+'px';
-  });
-  function animRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx-18+'px'; ring.style.top = ry-18+'px';
-    requestAnimationFrame(animRing);
+  /* ══ CURSOR — desktop only ══ */
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx=0, my=0, rx=0, ry=0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx-5+'px'; cursor.style.top = my-5+'px';
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx-18+'px'; ring.style.top = ry-18+'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a,button,.p-card').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('expand'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('expand'));
+    });
   }
-  animRing();
-  document.querySelectorAll('a,button,.p-card').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('expand'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('expand'));
-  });
 
   /* ══ HAMBURGER MENU ══ */
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
+
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('open');
-    mobileMenu.classList.toggle('open');
+    const isOpen = hamburger.classList.contains('open');
+    if (isOpen) {
+      const navHeight = document.querySelector('nav').offsetHeight;
+      mobileMenu.style.top = navHeight + 'px';
+      mobileMenu.classList.add('open');
+    } else {
+      mobileMenu.classList.remove('open');
+    }
   });
+
   document.querySelectorAll('.mobile-link').forEach(link => {
     link.addEventListener('click', () => {
       hamburger.classList.remove('open');
