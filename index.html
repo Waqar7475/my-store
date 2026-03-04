@@ -345,7 +345,7 @@
     }
 
     /* ══════════════════════════════════════
-       STATS BAR — glassmorphism
+       STATS BAR — glassmorphism + live anim
     ══════════════════════════════════════ */
     .stats-bar {
       background: var(--bg2);
@@ -355,15 +355,47 @@
       position: relative;
       overflow: hidden;
     }
-    .stats-bar::before {
-      content: '';
+
+    /* floating orbs behind */
+    .stats-bar .orb {
       position: absolute;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      filter: blur(60px);
       pointer-events: none;
+      opacity: 0.18;
     }
+    .stats-bar .orb1 {
+      width: 300px; height: 300px;
+      background: var(--accent);
+      top: -80px; left: -60px;
+      animation: orbFloat1 8s ease-in-out infinite;
+    }
+    .stats-bar .orb2 {
+      width: 200px; height: 200px;
+      background: var(--accent);
+      bottom: -60px; right: 10%;
+      animation: orbFloat2 10s ease-in-out infinite;
+    }
+    .stats-bar .orb3 {
+      width: 150px; height: 150px;
+      background: var(--accent);
+      top: 20%; left: 50%;
+      animation: orbFloat3 6s ease-in-out infinite;
+      opacity: 0.08;
+    }
+    @keyframes orbFloat1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(40px, 30px) scale(1.1); }
+    }
+    @keyframes orbFloat2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(-30px,-20px) scale(1.15); }
+    }
+    @keyframes orbFloat3 {
+      0%,100% { transform: translate(-50%,0) scale(1); }
+      50%      { transform: translate(-50%,15px) scale(0.9); }
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -371,11 +403,12 @@
       position: relative;
       z-index: 1;
     }
+
     .stat-card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 201, 122, 0.15);
+      background: rgba(0, 201, 122, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 201, 122, 0.1);
       border-radius: 16px;
       padding: 1.8rem 1.5rem;
       position: relative;
@@ -384,47 +417,80 @@
       text-align: left;
     }
     [data-theme="light"] .stat-card {
-      background: rgba(255,255,255,0.7);
-      border-color: rgba(0,143,85,0.15);
+      background: rgba(255,255,255,0.65);
+      border-color: rgba(0,143,85,0.12);
     }
+
+    /* animated scan line */
     .stat-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0.5;
+      top: -100%; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(to bottom, transparent, rgba(0,201,122,0.04), transparent);
+      animation: scanLine 4s linear infinite;
     }
+    @keyframes scanLine {
+      0%   { top: -40%; }
+      100% { top: 120%; }
+    }
+
+    /* corner accent */
     .stat-card::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top left, var(--glow), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.35s;
+      top: 0; left: 0;
+      width: 40px; height: 40px;
+      border-top: 1px solid rgba(0,201,122,0.35);
+      border-left: 1px solid rgba(0,201,122,0.35);
+      border-radius: 16px 0 0 0;
+      transition: all 0.3s;
+    }
+    .stat-card:hover::after {
+      width: 60px; height: 60px;
+      border-color: var(--accent);
     }
     .stat-card:hover {
-      border-color: rgba(0, 201, 122, 0.4);
-      transform: translateY(-5px);
-      box-shadow: 0 20px 50px rgba(0,201,122,0.1), inset 0 1px 0 rgba(0,201,122,0.2);
+      border-color: rgba(0,201,122,0.25);
+      transform: translateY(-4px);
+      background: rgba(0,201,122,0.07);
+      box-shadow: 0 20px 50px rgba(0,201,122,0.08);
     }
     [data-theme="light"] .stat-card:hover {
-      box-shadow: 0 20px 50px rgba(0,143,85,0.12);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 20px 40px rgba(0,143,85,0.1);
     }
-    .stat-card:hover::after { opacity: 1; }
+
+    /* pulsing dot */
+    .stat-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+      margin-bottom: 0.8rem;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,201,122,0.4); }
+      50%      { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 0 6px rgba(0,201,122,0); }
+    }
+    .stat-card:nth-child(2) .stat-dot { animation-delay: 0.5s; }
+    .stat-card:nth-child(3) .stat-dot { animation-delay: 1s; }
+    .stat-card:nth-child(4) .stat-dot { animation-delay: 1.5s; }
+
     .stat-num {
       font-family: 'Clash Display', sans-serif;
       font-size: 2.2rem;
       font-weight: 700;
       color: var(--accent);
       line-height: 1;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       display: block;
       position: relative;
       z-index: 1;
     }
     .stat-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       letter-spacing: 2.5px;
       text-transform: uppercase;
       color: var(--text2);
@@ -1117,22 +1183,29 @@
 
 <!-- STATS -->
 <div class="stats-bar reveal">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
   <div class="container">
     <div class="stats-grid">
       <div class="stat-card">
-        <span class="stat-num">2,400+</span>
+        <span class="stat-dot"></span>
+        <span class="stat-num" data-target="2400" data-suffix="+">0</span>
         <span class="stat-label">Happy Customers</span>
       </div>
       <div class="stat-card">
-        <span class="stat-num">50+</span>
+        <span class="stat-dot"></span>
+        <span class="stat-num" data-target="50" data-suffix="+">0</span>
         <span class="stat-label">Digital Products</span>
       </div>
       <div class="stat-card">
-        <span class="stat-num">4.9 ★</span>
+        <span class="stat-dot"></span>
+        <span class="stat-num" data-target="4.9" data-suffix=" ★" data-decimal="1">0</span>
         <span class="stat-label">Average Rating</span>
       </div>
       <div class="stat-card">
-        <span class="stat-num">98%</span>
+        <span class="stat-dot"></span>
+        <span class="stat-num" data-target="98" data-suffix="%">0</span>
         <span class="stat-label">Satisfaction Rate</span>
       </div>
     </div>
@@ -1614,7 +1687,41 @@
     });
   });
 
-  /* ══ SCROLL REVEAL ══ */
+  /* ══ STAT COUNTER ANIMATION ══ */
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const decimal = el.dataset.decimal ? parseInt(el.dataset.decimal) : 0;
+    const duration = 2000;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      current = increment * step;
+      if (step >= steps) {
+        current = target;
+        clearInterval(timer);
+      }
+      const display = decimal > 0
+        ? current.toFixed(decimal)
+        : Math.floor(current).toLocaleString();
+      el.textContent = display + suffix;
+    }, duration / steps);
+  }
+
+  // Trigger counters when stats section is visible
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-num[data-target]').forEach(animateCounter);
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const statsBar = document.querySelector('.stats-bar');
+  if (statsBar) statsObserver.observe(statsBar);
   const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
