@@ -527,7 +527,14 @@
       margin-bottom: 0.9rem;
       animation: dotPulse 2s ease-in-out infinite;
     }
-    @keyframes dotPulse {
+    @keyframes nfGlow {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.8; }
+      50%      { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
+    }
+    @keyframes nfPulse {
+      0%,100% { transform: scale(1); opacity: 0.4; }
+      50%      { transform: scale(1.15); opacity: 0.1; }
+    }
       0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 0 0 rgba(255,107,43,0.5); }
       50%      { opacity:0.7; transform:scale(1.3); box-shadow:0 0 0 6px rgba(255,107,43,0); }
     }
@@ -1147,7 +1154,400 @@
       .nav-right .currency-toggle { display: none; }
       .nav-right .theme-btn { display: none; }
     }
+    /* ══════════════════════════════════════
+       AUTH MODAL
+    ══════════════════════════════════════ */
+    .auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(14px);
+      z-index: 3000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .auth-overlay.open { opacity: 1; pointer-events: all; }
+    .auth-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%; max-width: 420px;
+      padding: 2.5rem;
+      position: relative;
+      transform: scale(0.93) translateY(20px);
+      transition: transform 0.35s cubic-bezier(.23,1,.32,1);
+    }
+    .auth-overlay.open .auth-box { transform: scale(1) translateY(0); }
+    .auth-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 20px 20px 0 0;
+    }
+    .auth-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text2);
+      font-size: 0.8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .auth-close:hover { border-color: var(--accent); color: var(--accent); }
+    .auth-logo { text-align: center; margin-bottom: 1.8rem; }
+    .auth-logo .logo { font-size: 1.4rem; }
+    .auth-tabs {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    }
+    .auth-tab {
+      flex: 1; padding: 0.65rem; background: transparent;
+      border: none; color: var(--text2);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.85rem; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-tab.active { background: var(--accent); color: #000; font-weight: 600; }
+    .auth-field { margin-bottom: 1.1rem; }
+    .auth-field label {
+      display: block; font-size: 0.72rem; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--text2); margin-bottom: 0.5rem;
+    }
+    .auth-input {
+      width: 100%; padding: 0.85rem 1rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'Cabinet Grotesk', sans-serif; font-size: 0.9rem;
+      transition: border-color 0.2s; outline: none;
+    }
+    .auth-input:focus { border-color: var(--accent); }
+    .auth-submit {
+      width: 100%; padding: 0.9rem;
+      background: var(--accent); color: #000;
+      border: none; border-radius: 10px;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: all 0.25s; margin-top: 0.5rem;
+    }
+    .auth-submit:hover { background: var(--accent2); transform: translateY(-2px); }
+    .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .auth-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.2rem 0; color: var(--text3); font-size: 0.78rem;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .auth-google {
+      width: 100%; padding: 0.85rem;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.88rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      transition: all 0.2s;
+    }
+    .auth-google:hover { border-color: var(--accent); background: var(--bg2); }
+    .auth-msg {
+      text-align: center; font-size: 0.78rem; margin-top: 0.8rem;
+      min-height: 1.2rem;
+    }
+    .auth-msg.error { color: #ff4444; }
+    .auth-msg.success { color: var(--accent); }
+
+    /* ══ ACCOUNT BUTTON in NAV ══ */
+    .account-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 100px; color: var(--text);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.78rem; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .account-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .account-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--accent); color: #000;
+      font-size: 0.7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ══ PURCHASES DASHBOARD ══ */
+    .dash-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(14px);
+      z-index: 3000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .dash-overlay.open { opacity: 1; pointer-events: all; }
+    .dash-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%; max-width: 600px;
+      max-height: 85vh; overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      transform: scale(0.93) translateY(20px);
+      transition: transform 0.35s cubic-bezier(.23,1,.32,1);
+    }
+    .dash-overlay.open .dash-box { transform: scale(1) translateY(0); }
+    .dash-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 20px 20px 0 0;
+    }
+    .dash-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.8rem;
+    }
+    .dash-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+    }
+    .dash-close {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text2);
+      font-size: 0.8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .dash-close:hover { border-color: var(--accent); color: var(--accent); }
+    .dash-user {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 1.5rem;
+    }
+    .dash-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent); color: #000;
+      font-size: 1.1rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .dash-user-info p:first-child { font-weight: 600; font-size: 0.95rem; }
+    .dash-user-info p:last-child { font-size: 0.75rem; color: var(--text2); }
+    .dash-section-title {
+      font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .purchase-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 0.7rem;
+      transition: border-color 0.2s;
+    }
+    .purchase-item:hover { border-color: var(--accent); }
+    .purchase-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--bg3); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .purchase-info { flex: 1; }
+    .purchase-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .purchase-date { font-size: 0.72rem; color: var(--text2); }
+    .purchase-dl {
+      padding: 0.4rem 0.9rem;
+      background: var(--accent); color: #000;
+      border: none; border-radius: 8px;
+      font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .purchase-dl:hover { background: var(--accent2); }
+    .dash-empty {
+      text-align: center; padding: 3rem 1rem;
+      color: var(--text2); font-size: 0.88rem;
+    }
+    .dash-empty .icon { font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.4; }
+    .dash-logout {
+      width: 100%; margin-top: 1.5rem; padding: 0.8rem;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text2);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    }
+    .dash-logout:hover { border-color: #ff4444; color: #ff4444; }
   </style>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // ══ APNA FIREBASE CONFIG YAHAN PASTE KARO ══
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    const authOverlay   = document.getElementById('authOverlay');
+    const authClose     = document.getElementById('authClose');
+    const loginTab      = document.getElementById('loginTab');
+    const signupTab     = document.getElementById('signupTab');
+    const loginForm     = document.getElementById('loginForm');
+    const signupForm    = document.getElementById('signupForm');
+    const authMsg       = document.getElementById('authMsg');
+    const dashOverlay   = document.getElementById('dashOverlay');
+    const dashClose     = document.getElementById('dashClose');
+    const accountBtn    = document.getElementById('accountBtn');
+    const loginBtn      = document.getElementById('loginBtn');
+    const dashUserName  = document.getElementById('dashUserName');
+    const dashUserEmail = document.getElementById('dashUserEmail');
+    const dashAvatar    = document.getElementById('dashAvatar');
+    const navAvatar     = document.getElementById('navAvatar');
+    const purchaseList  = document.getElementById('purchaseList');
+
+    const openAuth  = () => authOverlay.classList.add('open');
+    const closeAuth = () => { authOverlay.classList.remove('open'); authMsg.textContent=''; }
+    const openDash  = () => { dashOverlay.classList.add('open'); loadPurchases(); }
+    const closeDash = () => dashOverlay.classList.remove('open');
+
+    loginBtn?.addEventListener('click', openAuth);
+    authClose?.addEventListener('click', closeAuth);
+    dashClose?.addEventListener('click', closeDash);
+    accountBtn?.addEventListener('click', openDash);
+    authOverlay?.addEventListener('click', e => { if(e.target===authOverlay) closeAuth(); });
+    dashOverlay?.addEventListener('click', e => { if(e.target===dashOverlay) closeDash(); });
+
+    loginTab?.addEventListener('click', () => {
+      loginTab.classList.add('active'); signupTab.classList.remove('active');
+      loginForm.style.display='block'; signupForm.style.display='none'; authMsg.textContent='';
+    });
+    signupTab?.addEventListener('click', () => {
+      signupTab.classList.add('active'); loginTab.classList.remove('active');
+      signupForm.style.display='block'; loginForm.style.display='none'; authMsg.textContent='';
+    });
+
+    document.getElementById('doLogin')?.addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      const btn   = document.getElementById('doLogin');
+      if(!email||!pass) return showMsg('Fill all fields','error');
+      btn.disabled=true; btn.textContent='Logging in...';
+      try { await signInWithEmailAndPassword(auth,email,pass); closeAuth(); }
+      catch(e) { showMsg(fbErr(e.code),'error'); }
+      btn.disabled=false; btn.textContent='Login →';
+    });
+
+    document.getElementById('doSignup')?.addEventListener('click', async () => {
+      const name  = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pass  = document.getElementById('signupPass').value;
+      const btn   = document.getElementById('doSignup');
+      if(!name||!email||!pass) return showMsg('Fill all fields','error');
+      if(pass.length<6) return showMsg('Password min 6 characters','error');
+      btn.disabled=true; btn.textContent='Creating...';
+      try {
+        const cred = await createUserWithEmailAndPassword(auth,email,pass);
+        await updateProfile(cred.user,{displayName:name});
+        closeAuth();
+      } catch(e) { showMsg(fbErr(e.code),'error'); }
+      btn.disabled=false; btn.textContent='Create Account →';
+    });
+
+    document.getElementById('googleLogin')?.addEventListener('click', async () => {
+      try { await signInWithPopup(auth,googleProvider); closeAuth(); }
+      catch(e) { showMsg(fbErr(e.code),'error'); }
+    });
+    document.getElementById('googleSignup')?.addEventListener('click', async () => {
+      try { await signInWithPopup(auth,googleProvider); closeAuth(); }
+      catch(e) { showMsg(fbErr(e.code),'error'); }
+    });
+
+    document.getElementById('doLogout')?.addEventListener('click', async () => {
+      await signOut(auth); closeDash();
+    });
+
+    onAuthStateChanged(auth, user => {
+      if(user) {
+        const ini = (user.displayName||user.email).split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        if(loginBtn)    loginBtn.style.display='none';
+        if(accountBtn)  accountBtn.style.display='flex';
+        if(navAvatar)   navAvatar.textContent=ini;
+        if(dashAvatar)  dashAvatar.textContent=ini;
+        if(dashUserName)  dashUserName.textContent=user.displayName||'Customer';
+        if(dashUserEmail) dashUserEmail.textContent=user.email;
+      } else {
+        if(loginBtn)   loginBtn.style.display='flex';
+        if(accountBtn) accountBtn.style.display='none';
+      }
+    });
+
+    async function loadPurchases() {
+      if(!auth.currentUser) return;
+      purchaseList.innerHTML='<p style="color:var(--text2);font-size:0.85rem;text-align:center;padding:1.5rem;">Loading...</p>';
+      try {
+        const q = query(collection(db,'purchases'),where('uid','==',auth.currentUser.uid));
+        const snap = await getDocs(q);
+        if(snap.empty){
+          purchaseList.innerHTML=`<div class="dash-empty"><span class="icon">📦</span>No purchases yet.<br>Buy something awesome!</div>`;
+          return;
+        }
+        purchaseList.innerHTML='';
+        snap.forEach(doc=>{
+          const d=doc.data();
+          const date=d.createdAt?.toDate?.()?.toLocaleDateString()||'Recently';
+          purchaseList.innerHTML+=`
+            <div class="purchase-item">
+              <div class="purchase-icon">${d.emoji||'📦'}</div>
+              <div class="purchase-info">
+                <p class="purchase-name">${d.productName}</p>
+                <p class="purchase-date">Purchased: ${date}</p>
+              </div>
+              <button class="purchase-dl" onclick="alert('Download:\\n${d.downloadUrl||'Coming soon!'}')">↓ Download</button>
+            </div>`;
+        });
+      } catch(e){
+        purchaseList.innerHTML='<p style="color:#ff4444;font-size:0.82rem;text-align:center;padding:1rem;">Error loading. Check Firebase config.</p>';
+      }
+    }
+
+    window.savePurchase = async (pid,name,emoji,dlUrl) => {
+      if(!auth.currentUser){ openAuth(); return false; }
+      await addDoc(collection(db,'purchases'),{
+        uid:auth.currentUser.uid, productId:pid,
+        productName:name, emoji, downloadUrl:dlUrl||'#',
+        createdAt:serverTimestamp()
+      });
+      return true;
+    };
+    window.openAuthModal = openAuth;
+
+    function showMsg(msg,type){ authMsg.textContent=msg; authMsg.className='auth-msg '+type; }
+    function fbErr(code){
+      return {
+        'auth/email-already-in-use':'Email already registered',
+        'auth/invalid-email':'Invalid email address',
+        'auth/wrong-password':'Wrong password',
+        'auth/user-not-found':'No account with this email',
+        'auth/weak-password':'Password too weak (min 6 chars)',
+        'auth/too-many-requests':'Too many attempts, try later',
+        'auth/invalid-credential':'Invalid email or password',
+        'auth/popup-closed-by-user':'Google popup was closed',
+      }[code]||'Something went wrong, try again';
+    }
+  </script>
 </head>
 <body>
 
@@ -1157,6 +1557,84 @@
 <!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ══ AUTH MODAL ══ -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <button class="auth-close" id="authClose">✕</button>
+    <div class="auth-logo">
+      <a href="#" class="logo">Digital<span>Den</span></a>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab">Login</button>
+      <button class="auth-tab" id="signupTab">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="auth-field">
+        <label>Email</label>
+        <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input class="auth-input" id="loginPass" type="password" placeholder="••••••••"/>
+      </div>
+      <button class="auth-submit" id="doLogin">Login →</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-google" id="googleLogin">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" style="display:none;">
+      <div class="auth-field">
+        <label>Full Name</label>
+        <input class="auth-input" id="signupName" type="text" placeholder="Ali Hassan"/>
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input class="auth-input" id="signupEmail" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input class="auth-input" id="signupPass" type="password" placeholder="Min 6 characters"/>
+      </div>
+      <button class="auth-submit" id="doSignup">Create Account →</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-google" id="googleSignup">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+
+    <p class="auth-msg" id="authMsg"></p>
+  </div>
+</div>
+
+<!-- ══ PURCHASES DASHBOARD ══ -->
+<div class="dash-overlay" id="dashOverlay">
+  <div class="dash-box">
+    <div class="dash-header">
+      <h2 class="dash-title">My Account</h2>
+      <button class="dash-close" id="dashClose">✕</button>
+    </div>
+    <div class="dash-user">
+      <div class="dash-avatar" id="dashAvatar">?</div>
+      <div class="dash-user-info">
+        <p id="dashUserName">Customer</p>
+        <p id="dashUserEmail">email@example.com</p>
+      </div>
+    </div>
+    <p class="dash-section-title">My Purchases</p>
+    <div id="purchaseList">
+      <div class="dash-empty"><span class="icon">📦</span>No purchases yet.</div>
+    </div>
+    <button class="dash-logout" id="doLogout">🚪 Logout</button>
+  </div>
+</div>
 
 <!-- MODAL OVERLAY -->
 <div class="modal-overlay" id="modalOverlay">
@@ -1200,6 +1678,15 @@
     <button class="cart-btn" id="cartBtn">
       <span>Cart</span>
       <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <!-- Login Button (shown when logged out) -->
+    <button class="account-btn" id="loginBtn" style="display:flex;">
+      Login
+    </button>
+    <!-- Account Button (shown when logged in) -->
+    <button class="account-btn" id="accountBtn" style="display:none;">
+      <div class="account-avatar" id="navAvatar">?</div>
+      My Account
     </button>
     <!-- Hamburger -->
     <button class="hamburger" id="hamburger">
@@ -1301,8 +1788,53 @@
       <!-- Card 1 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="templates">
         <div class="p-card" data-id="1">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(0,20,40,0.9),rgba(0,60,30,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">📊</span>
+          <div class="card-thumb" style="background:linear-gradient(160deg,#0d0000 0%,#1a0000 50%,#0d0000 100%); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+
+            <!-- Red glow blob -->
+            <div style="position:absolute;width:220px;height:220px;background:radial-gradient(circle,rgba(229,9,20,0.2),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:nfGlow 3s ease-in-out infinite;pointer-events:none;z-index:1;"></div>
+
+            <!-- Full Netflix logo: N + NETFLIX text stacked -->
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+
+              <!-- N icon -->
+              <svg width="38" height="50" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 12px rgba(229,9,20,0.9));display:block;">
+                <rect x="0" y="0" width="20" height="130" fill="#e50914"/>
+                <rect x="80" y="0" width="20" height="130" fill="#e50914"/>
+                <polygon points="0,0 20,0 100,130 80,130" fill="#e50914"/>
+                <polygon points="20,0 40,0 20,26" fill="#0d0000"/>
+                <polygon points="60,130 80,130 80,104" fill="#0d0000"/>
+                <polygon points="0,0 20,0 100,130 80,130" fill="url(#nfS2)" opacity="0">
+                  <animate attributeName="opacity" values="0;0.5;0" dur="3s" repeatCount="indefinite"/>
+                </polygon>
+                <defs>
+                  <linearGradient id="nfS2" x1="0" y1="0" x2="100" y2="130" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="white" stop-opacity="0"/>
+                    <stop offset="48%" stop-color="white" stop-opacity="0"/>
+                    <stop offset="55%" stop-color="white" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              <!-- NETFLIX wordmark SVG — each letter drawn precisely -->
+              <svg width="108" height="18" viewBox="0 0 216 36" xmlns="http://www.w3.org/2000/svg" style="display:block;filter:drop-shadow(0 0 4px rgba(229,9,20,0.6));">
+                <!-- N -->
+                <path d="M2 2 L2 34 L10 34 L10 14 L19 34 L27 34 L27 2 L19 2 L19 22 L10 2 Z" fill="#e50914"/>
+                <!-- E -->
+                <path d="M33 2 L33 34 L53 34 L53 27 L41 27 L41 21 L51 21 L51 15 L41 15 L41 9 L53 9 L53 2 Z" fill="#e50914"/>
+                <!-- T -->
+                <path d="M59 2 L59 9 L68 9 L68 34 L76 34 L76 9 L85 9 L85 2 Z" fill="#e50914"/>
+                <!-- F -->
+                <path d="M91 2 L91 34 L99 34 L99 21 L110 21 L110 15 L99 15 L99 9 L112 9 L112 2 Z" fill="#e50914"/>
+                <!-- L -->
+                <path d="M118 2 L118 34 L138 34 L138 27 L126 27 L126 2 Z" fill="#e50914"/>
+                <!-- I -->
+                <rect x="144" y="2" width="8" height="32" fill="#e50914"/>
+                <!-- X -->
+                <path d="M158 2 L168 18 L158 34 L168 34 L176 21 L184 34 L194 34 L184 18 L194 2 L184 2 L176 15 L168 2 Z" fill="#e50914"/>
+              </svg>
+
+            </div>
             <span class="badge badge-new">New</span>
           </div>
           <div class="card-body">
@@ -1325,8 +1857,27 @@
       <!-- Card 2 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="ebooks">
         <div class="p-card" data-id="2">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(40,12,3,0.9),rgba(65,22,4,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">📘</span>
+          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(20,8,2,0.9),rgba(35,12,3,0.85));">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
+              <rect x="18" y="12" width="36" height="52" rx="4" fill="#ff6b2b" opacity="0.15" stroke="#ff6b2b" stroke-width="1.5"/>
+              <rect x="22" y="16" width="28" height="44" rx="3" fill="#ff6b2b" opacity="0.1"/>
+              <line x1="26" y1="26" x2="46" y2="26" stroke="#ff9a5c" stroke-width="2" stroke-linecap="round">
+                <animate attributeName="x2" values="46;38;46" dur="2s" repeatCount="indefinite"/>
+              </line>
+              <line x1="26" y1="34" x2="50" y2="34" stroke="#ff6b2b" stroke-width="2" stroke-linecap="round">
+                <animate attributeName="x2" values="50;42;50" dur="2.5s" repeatCount="indefinite"/>
+              </line>
+              <line x1="26" y1="42" x2="44" y2="42" stroke="#ff9a5c" stroke-width="2" stroke-linecap="round">
+                <animate attributeName="x2" values="44;52;44" dur="1.8s" repeatCount="indefinite"/>
+              </line>
+              <line x1="26" y1="50" x2="48" y2="50" stroke="#ff6b2b" stroke-width="2" stroke-linecap="round">
+                <animate attributeName="x2" values="48;36;48" dur="2.2s" repeatCount="indefinite"/>
+              </line>
+              <circle cx="54" cy="58" r="10" fill="#ff6b2b" opacity="0.2" stroke="#ff6b2b" stroke-width="1.5">
+                <animate attributeName="r" values="10;12;10" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <text x="54" y="62" text-anchor="middle" fill="#ff6b2b" font-size="10" font-weight="bold">$</text>
+            </svg>
             <span class="badge badge-hot">Bestseller</span>
           </div>
           <div class="card-body">
@@ -1349,8 +1900,25 @@
       <!-- Card 3 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="graphics">
         <div class="p-card" data-id="3">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(50,10,3,0.9),rgba(60,20,5,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">🎨</span>
+          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(20,8,2,0.9),rgba(38,12,3,0.85));">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
+              <rect x="10" y="10" width="26" height="26" rx="6" fill="#ff6b2b" opacity="0.8">
+                <animate attributeName="opacity" values="0.8;1;0.8" dur="1.8s" repeatCount="indefinite"/>
+              </rect>
+              <rect x="44" y="10" width="26" height="26" rx="6" fill="#ff9a5c" opacity="0.6">
+                <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.2s" repeatCount="indefinite"/>
+              </rect>
+              <rect x="10" y="44" width="26" height="26" rx="6" fill="#ff9a5c" opacity="0.6">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+              </rect>
+              <rect x="44" y="44" width="26" height="26" rx="6" fill="#ff6b2b" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.5;0.9" dur="1.5s" repeatCount="indefinite"/>
+              </rect>
+              <text x="23" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="bold">IG</text>
+              <text x="57" y="28" text-anchor="middle" fill="white" font-size="9" font-weight="bold">in</text>
+              <text x="23" y="62" text-anchor="middle" fill="white" font-size="9" font-weight="bold">𝕏</text>
+              <text x="57" y="62" text-anchor="middle" fill="white" font-size="8" font-weight="bold">YT</text>
+            </svg>
           </div>
           <div class="card-body">
             <p class="card-cat">Graphics</p>
@@ -1371,8 +1939,21 @@
       <!-- Card 4 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="courses">
         <div class="p-card" data-id="4">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(60,20,5,0.9),rgba(50,15,5,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">🐍</span>
+          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(20,8,2,0.9),rgba(36,12,3,0.85));">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
+              <rect x="8" y="18" width="64" height="44" rx="6" fill="none" stroke="#ff6b2b" stroke-width="1.5" opacity="0.4"/>
+              <text x="14" y="36" fill="#ff9a5c" font-size="9" font-family="monospace" opacity="0.9">
+                def learn():
+                <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/>
+              </text>
+              <text x="18" y="48" fill="#ff6b2b" font-size="9" font-family="monospace">
+                return 💡
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite"/>
+              </text>
+              <circle cx="62" cy="22" r="4" fill="#ff6b2b">
+                <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
             <span class="badge badge-new">New</span>
           </div>
           <div class="card-body">
@@ -1394,8 +1975,25 @@
       <!-- Card 5 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="tools">
         <div class="p-card" data-id="5">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(45,12,3,0.9),rgba(70,25,5,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">🤖</span>
+          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(20,8,2,0.9),rgba(38,14,3,0.85));">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
+              <rect x="20" y="24" width="40" height="36" rx="8" fill="none" stroke="#ff6b2b" stroke-width="1.8"/>
+              <circle cx="31" cy="38" r="5" fill="#ff6b2b" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="49" cy="38" r="5" fill="#ff9a5c" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.2s" begin="0.6s" repeatCount="indefinite"/>
+              </circle>
+              <path d="M30 50 Q40 56 50 50" stroke="#ff6b2b" stroke-width="2" fill="none" stroke-linecap="round">
+                <animate attributeName="d" values="M30 50 Q40 56 50 50;M30 50 Q40 52 50 50;M30 50 Q40 56 50 50" dur="2s" repeatCount="indefinite"/>
+              </path>
+              <line x1="40" y1="14" x2="40" y2="24" stroke="#ff6b2b" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="40" cy="11" r="3" fill="#ff9a5c">
+                <animate attributeName="fill" values="#ff9a5c;#ff6b2b;#ff9a5c" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <line x1="20" y1="42" x2="12" y2="42" stroke="#ff6b2b" stroke-width="1.5" opacity="0.5"/>
+              <line x1="60" y1="42" x2="68" y2="42" stroke="#ff6b2b" stroke-width="1.5" opacity="0.5"/>
+            </svg>
             <span class="badge badge-sale">−50%</span>
           </div>
           <div class="card-body">
@@ -1418,8 +2016,22 @@
       <!-- Card 6 -->
       <div class="col-6 col-lg-4 reveal product-item" data-cat="templates">
         <div class="p-card" data-id="6">
-          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(80,15,0,0.9),rgba(60,20,5,0.8));">
-            <span style="font-size:3.5rem;position:relative;z-index:1;">🌐</span>
+          <div class="card-thumb" style="background:linear-gradient(135deg,rgba(20,8,2,0.9),rgba(36,12,3,0.85));">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
+              <circle cx="40" cy="40" r="26" fill="none" stroke="#ff6b2b" stroke-width="1.5" opacity="0.6"/>
+              <ellipse cx="40" cy="40" rx="13" ry="26" fill="none" stroke="#ff9a5c" stroke-width="1.2" opacity="0.5"/>
+              <line x1="14" y1="40" x2="66" y2="40" stroke="#ff6b2b" stroke-width="1.2" opacity="0.4"/>
+              <line x1="18" y1="28" x2="62" y2="28" stroke="#ff6b2b" stroke-width="1" opacity="0.3"/>
+              <line x1="18" y1="52" x2="62" y2="52" stroke="#ff6b2b" stroke-width="1" opacity="0.3"/>
+              <circle cx="40" cy="40" r="4" fill="#ff6b2b">
+                <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="40" cy="40" r="10" fill="none" stroke="#ff6b2b" stroke-width="1" opacity="0.3">
+                <animate attributeName="r" values="10;20;10" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
             <span class="badge badge-sale">−30%</span>
           </div>
           <div class="card-body">
