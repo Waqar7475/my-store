@@ -4,295 +4,349 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>AceRDP — High-Performance VPS & RDP Hosting</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#080808;--red:#e5091a;--red2:#ff2035;
-  --border:rgba(229,9,26,.2);--border2:rgba(255,255,255,.07);
-  --text:#fff;--text2:#999;--text3:#444;
+  --bg:#060606;--bg2:#0e0202;
+  --red:#e5091a;--red2:#ff2d3d;--red3:rgba(229,9,26,.12);
+  --bd:rgba(229,9,26,.18);--bd2:rgba(255,255,255,.06);
+  --t:#ffffff;--t2:#888;--t3:#3a3a3a;
+  --ff:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;cursor:none;}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:#080808;}::-webkit-scrollbar-thumb{background:var(--red);}
+body{background:var(--bg);color:var(--t);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+::-webkit-scrollbar{width:2px;}::-webkit-scrollbar-track{background:#060606;}::-webkit-scrollbar-thumb{background:var(--red);}
 @media(pointer:coarse){body{cursor:auto;}}
 
-/* CURSOR */
-.cur{position:fixed;width:7px;height:7px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
-.cur-ring{position:fixed;width:26px;height:26px;border:1.5px solid rgba(229,9,26,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .13s ease,top .13s ease;}
-@media(pointer:coarse){.cur,.cur-ring{display:none;}}
+/* ── CURSOR ── */
+#cur{position:fixed;width:8px;height:8px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 8px var(--red);}
+#curR{position:fixed;width:28px;height:28px;border:1px solid rgba(229,9,26,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s,top .12s;}
+@media(pointer:coarse){#cur,#curR{display:none;}}
 
-#bgc{position:fixed;inset:0;z-index:0;pointer-events:none;}
-#ptc{position:fixed;inset:0;z-index:1;pointer-events:none;}
+/* ── CANVAS ── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#pt{position:fixed;inset:0;z-index:1;pointer-events:none;}
 
-/* ══ NAV ══ */
-nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:.75rem 2.5rem;background:rgba(8,8,8,.82);backdrop-filter:blur(22px);border-bottom:1px solid rgba(229,9,26,.1);transition:background .3s;}
-nav.solid{background:rgba(8,8,8,.97);}
-.nav-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;}
-.nav-logo-icon{width:28px;height:28px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:900;color:#fff;box-shadow:0 0 12px rgba(229,9,26,.5);}
-.nav-logo-text{font-size:1.1rem;font-weight:800;color:#fff;}
-.nav-logo-text span{color:var(--red);}
-.nav-links{display:flex;gap:2.5rem;}
-.nav-links a{color:var(--text2);text-decoration:none;font-size:.82rem;font-weight:500;transition:color .2s;position:relative;}
-.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transition:transform .25s;}
-.nav-links a:hover,.nav-links a.active{color:#fff;}
-.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
-.nav-right{display:flex;align-items:center;gap:.7rem;}
-.btn-reg{padding:.38rem 1rem;background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:5px;color:#fff;font-family:'Inter',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;}
-.btn-reg:hover{border-color:rgba(255,255,255,.45);}
-.btn-log{padding:.38rem 1.1rem;background:var(--red);border:none;border-radius:5px;color:#fff;font-family:'Inter',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn-log:hover{background:var(--red2);box-shadow:0 0 18px rgba(229,9,26,.5);}
-.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:1px solid var(--border2);border-radius:5px;padding:6px;}
-.hamburger span{display:block;width:18px;height:1.5px;background:#fff;transition:all .3s;}
-.hamburger.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
-@media(max-width:768px){.nav-links{display:none;}.hamburger{display:flex;}nav{padding:.7rem 1.2rem;}}
-.mob-menu{display:none;position:fixed;top:53px;left:0;right:0;background:rgba(8,8,8,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:1.3rem;flex-direction:column;gap:.7rem;z-index:799;}
-.mob-menu.open{display:flex;}
-.mob-menu a{color:var(--text2);text-decoration:none;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;padding:.5rem 0;border-bottom:1px solid var(--border2);}
+/* ── NAV ── */
+nav{position:fixed;inset-block-start:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.7rem 2.2rem;
+  background:rgba(6,6,6,.8);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(229,9,26,.1);transition:background .4s;}
+nav.dark{background:rgba(6,6,6,.97);}
+.logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;}
+.logo-i{width:30px;height:30px;background:var(--red);border-radius:7px;display:grid;place-items:center;font-family:var(--ff);font-size:1rem;font-weight:800;color:#fff;box-shadow:0 0 15px rgba(229,9,26,.45);}
+.logo-t{font-family:var(--ff);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:.5px;}
+.logo-t span{color:var(--red);}
+.nl{display:flex;gap:2.2rem;}
+.nl a{color:var(--t2);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:.3px;transition:color .2s;position:relative;}
+.nl a::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.nl a:hover,.nl a.on{color:#fff;}
+.nl a:hover::after,.nl a.on::after{transform:scaleX(1);}
+.nr{display:flex;align-items:center;gap:.6rem;}
+.btn-g{padding:.38rem 1rem;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:5px;color:#fff;font-family:var(--fb);font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-g:hover{border-color:rgba(255,255,255,.4);}
+.btn-r{padding:.38rem 1.1rem;background:var(--red);border:none;border-radius:5px;color:#fff;font-family:var(--fb);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-r:hover{background:var(--red2);box-shadow:0 0 18px rgba(229,9,26,.5);}
+.hbg{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:1px solid var(--bd2);border-radius:5px;padding:6px;}
+.hbg span{display:block;width:18px;height:1.5px;background:#fff;transition:all .3s;}
+.hbg.x span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+.hbg.x span:nth-child(2){opacity:0;}
+.hbg.x span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+@media(max-width:768px){.nl{display:none;}.hbg{display:flex;}nav{padding:.65rem 1.1rem;}}
+.mmenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,6,6,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:1.2rem;flex-direction:column;gap:.65rem;z-index:899;}
+.mmenu.open{display:flex;}
+.mmenu a{color:var(--t2);text-decoration:none;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;padding:.45rem 0;border-bottom:1px solid var(--bd2);}
 
-/* ══ HERO ══ */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:5rem 1rem 3rem;text-align:center;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(229,9,26,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(229,9,26,.03) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;z-index:0;mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,black,transparent);}
-.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem 1.1rem;margin-bottom:2rem;background:rgba(229,9,26,.1);border:1px solid rgba(229,9,26,.3);border-radius:4px;font-size:.66rem;letter-spacing:2.5px;text-transform:uppercase;color:#ff7070;position:relative;z-index:1;}
-.hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:bdot 1.5s ease-in-out infinite;box-shadow:0 0 6px var(--red);}
-@keyframes bdot{0%,100%{opacity:1;}50%{opacity:.3;}}
-.hero h1{font-size:clamp(2rem,5.5vw,4.2rem);font-weight:800;line-height:1.08;margin-bottom:1.3rem;position:relative;z-index:1;letter-spacing:-.5px;}
-.hero h1 em{font-style:italic;color:var(--red);}
-.hero-sub{font-size:.9rem;color:var(--text2);line-height:1.85;max-width:460px;margin:0 auto 2.2rem;position:relative;z-index:1;font-weight:300;}
-.btn-signup{display:inline-flex;align-items:center;gap:.5rem;padding:.82rem 2.1rem;background:var(--red);color:#fff;border:1px solid var(--red);border-radius:5px;font-family:'Inter',sans-serif;font-size:.86rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .25s;box-shadow:0 0 28px rgba(229,9,26,.35);position:relative;z-index:1;}
-.btn-signup:hover{background:var(--red2);transform:translateY(-3px);box-shadow:0 8px 35px rgba(229,9,26,.55);color:#fff;}
-.hero-bg-text{position:absolute;pointer-events:none;z-index:0;font-size:clamp(5rem,14vw,12rem);font-weight:900;color:rgba(229,9,26,.04);letter-spacing:-4px;line-height:1;user-select:none;}
-.hbt-l{left:-2%;top:28%;}
-.hbt-r{right:-2%;top:42%;}
+/* ── HERO ── */
+.hero{min-height:100vh;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 1.5rem 4rem;text-align:center;overflow:hidden;}
 
-/* ══ OS TICKER ══ */
-.ticker-wrap{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.75rem 0;background:rgba(229,9,26,.025);}
-.ticker-track{display:flex;gap:0;white-space:nowrap;width:max-content;animation:tick 28s linear infinite;}
-.ticker-track:hover{animation-play-state:paused;}
-@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.t-item{display:inline-flex;align-items:center;gap:.6rem;padding:0 2rem;color:var(--text2);font-size:.76rem;font-weight:500;border-right:1px solid rgba(255,255,255,.05);}
-.t-item svg,.t-item img{width:18px;height:18px;flex-shrink:0;}
+/* animated grid */
+.hero-grid{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(229,9,26,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(229,9,26,.04) 1px,transparent 1px);
+  background-size:52px 52px;
+  animation:gridSlide 18s linear infinite;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 20%,transparent);}
+@keyframes gridSlide{from{background-position:0 0;}to{background-position:52px 52px;}}
 
-/* ══ MAP SECTION ══ */
-.map-sec{position:relative;z-index:2;padding:4.5rem 0 1rem;}
-.map-label{text-align:center;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:1.5rem;}
-.map-container{position:relative;max-width:680px;margin:0 auto;padding:0 1.5rem;}
-#wmCanvas{width:100%;display:block;}
-/* map pins */
-.mpin{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transform:translateX(-50%);}
-.mpin-dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px rgba(229,9,26,.9),0 0 3px rgba(229,9,26,1);position:relative;flex-shrink:0;}
-.mpin-ring{position:absolute;top:50%;left:50%;width:24px;height:24px;border-radius:50%;border:1px solid rgba(229,9,26,.5);transform:translate(-50%,-50%);animation:mring 2s ease-out infinite;}
-@keyframes mring{0%{transform:translate(-50%,-50%) scale(.4);opacity:1;}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0;}}
-.mpin-tag{background:rgba(200,8,22,.88);border:1px solid rgba(229,9,26,.55);border-radius:5px;padding:.28rem .6rem;font-size:.62rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:.35rem;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5);backdrop-filter:blur(6px);}
-.mpin-ping{color:rgba(255,255,255,.55);font-weight:400;}
+/* scanline */
+.hero-scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(229,9,26,.5) 50%,transparent 100%);animation:scanMove 5s ease-in-out infinite;z-index:0;pointer-events:none;}
+@keyframes scanMove{0%,100%{top:5%;opacity:0;}10%{opacity:1;}90%{opacity:.5;}99%{top:95%;opacity:0;}}
 
-/* ══ PRICING ══ */
-.pricing-sec{position:relative;z-index:2;padding:1.5rem 0 5rem;}
-.pricing-head{text-align:center;margin-bottom:2.5rem;}
-.powered-by{font-size:clamp(1.3rem,3vw,2rem);font-weight:700;color:#fff;margin-bottom:.4rem;}
-.powered-by b{font-weight:900;}
-.red-line{width:100px;height:2px;background:var(--red);margin:.3rem auto 0;box-shadow:0 0 8px rgba(229,9,26,.6);}
+/* vignette */
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 65% at 50% 50%,transparent,rgba(6,6,6,.6));z-index:0;pointer-events:none;}
 
-/* Plan card */
-.plan-card{
-  background:rgba(14,3,3,.85);
-  border:1px solid rgba(229,9,26,.16);
-  border-radius:8px;
-  padding:1.4rem 1.3rem 1.3rem;
-  transition:all .3s cubic-bezier(.23,1,.32,1);
-  position:relative;overflow:hidden;
+.hero-inner{position:relative;z-index:2;max-width:760px;}
+
+.hero-chip{display:inline-flex;align-items:center;gap:.55rem;padding:.32rem 1rem;margin-bottom:1.8rem;
+  background:rgba(229,9,26,.08);border:1px solid rgba(229,9,26,.28);border-radius:100px;
+  font-family:var(--ff);font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:#ff8080;
+  animation:fadeUp .7s ease both;}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+.hero h1{font-family:var(--ff);font-size:clamp(2rem,5.8vw,4.4rem);font-weight:800;line-height:1.06;letter-spacing:-.5px;margin-bottom:1.2rem;animation:fadeUp .7s .12s ease both;}
+.hero h1 .r{color:var(--red);font-style:italic;}
+.hero h1 .w{color:#fff;}
+
+/* typewriter second line */
+.hero-tw{display:inline-block;border-right:2px solid var(--red);padding-right:2px;animation:fadeUp .7s .12s ease both,blink-cur .8s .8s step-end infinite;}
+@keyframes blink-cur{0%,100%{border-color:var(--red);}50%{border-color:transparent;}}
+
+.hero-sub{font-size:.88rem;color:var(--t2);line-height:1.85;max-width:440px;margin:0 auto 1.8rem;font-weight:300;animation:fadeUp .7s .24s ease both;}
+
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap;animation:fadeUp .7s .36s ease both;margin-bottom:2.5rem;}
+.hero-btn-main{display:inline-flex;align-items:center;gap:.5rem;padding:.78rem 2rem;background:var(--red);color:#fff;border:none;border-radius:6px;font-family:var(--ff);font-size:.84rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all .25s;box-shadow:0 0 30px rgba(229,9,26,.35);}
+.hero-btn-main:hover{background:var(--red2);transform:translateY(-3px);box-shadow:0 10px 40px rgba(229,9,26,.5);color:#fff;}
+.hero-btn-out{display:inline-flex;align-items:center;gap:.5rem;padding:.78rem 1.8rem;background:transparent;color:var(--t2);border:1px solid rgba(255,255,255,.12);border-radius:6px;font-family:var(--ff);font-size:.84rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .25s;}
+.hero-btn-out:hover{border-color:rgba(229,9,26,.4);color:#fff;transform:translateY(-3px);}
+
+/* hero stats strip */
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:0;border:1px solid var(--bd2);border-radius:10px;overflow:hidden;backdrop-filter:blur(8px);background:rgba(255,255,255,.02);animation:fadeUp .7s .48s ease both;}
+.hs-item{padding:.9rem 1.6rem;display:flex;flex-direction:column;align-items:center;gap:.18rem;border-right:1px solid var(--bd2);position:relative;transition:background .2s;}
+.hs-item:last-child{border-right:none;}
+.hs-item:hover{background:rgba(229,9,26,.04);}
+.hs-n{font-family:var(--ff);font-size:1.25rem;font-weight:800;color:#fff;line-height:1;}
+.hs-l{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);}
+@media(max-width:600px){.hs-item{padding:.7rem 1rem;}.hs-n{font-size:1rem;}}
+
+/* floating live badges */
+.fbadge{position:absolute;z-index:2;display:flex;align-items:center;gap:.45rem;padding:.45rem .8rem;background:rgba(10,2,2,.92);border:1px solid rgba(229,9,26,.22);border-radius:8px;backdrop-filter:blur(12px);font-size:.67rem;font-weight:500;pointer-events:none;white-space:nowrap;}
+.fbadge .fd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.fbadge .fd.g{background:#22c55e;box-shadow:0 0 6px #22c55e;animation:blink 2s ease-in-out infinite;}
+.fbadge .fd.r{background:var(--red);box-shadow:0 0 6px var(--red);animation:blink 1.5s ease-in-out infinite;}
+.fb1{top:22%;left:4%;animation:float1 5s ease-in-out infinite;}
+.fb2{top:28%;right:4%;animation:float2 6s ease-in-out infinite;}
+.fb3{bottom:22%;left:6%;animation:float1 7s ease-in-out infinite .3s;}
+@keyframes float1{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes float2{0%,100%{transform:translateY(0);}50%{transform:translateY(9px);}}
+@media(max-width:900px){.fbadge{display:none;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── TICKER ── */
+.ticker{position:relative;z-index:2;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);overflow:hidden;padding:.72rem 0;background:rgba(229,9,26,.025);}
+.tick-track{display:flex;width:max-content;animation:tickAnim 30s linear infinite;}
+.tick-track:hover{animation-play-state:paused;}
+@keyframes tickAnim{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ti{display:inline-flex;align-items:center;gap:.55rem;padding:0 2rem;color:var(--t2);font-size:.73rem;font-weight:500;border-right:1px solid rgba(255,255,255,.04);}
+.ti svg{width:17px;height:17px;flex-shrink:0;}
+
+/* ── MAP SECTION ── */
+.map-wrap{position:relative;z-index:2;padding:3.5rem 0 .5rem;}
+.map-lbl{text-align:center;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:1.2rem;}
+.map-inner{position:relative;max-width:660px;margin:0 auto;padding:0 1.5rem;}
+#wmc{width:100%;display:block;}
+.mpin{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;transform:translateX(-50%);cursor:pointer;}
+.mpin-d{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red),0 0 3px var(--red);position:relative;}
+.mpin-r{position:absolute;top:50%;left:50%;width:22px;height:22px;border-radius:50%;border:1px solid rgba(229,9,26,.45);transform:translate(-50%,-50%);animation:mpulse 2s ease-out infinite;}
+@keyframes mpulse{0%{transform:translate(-50%,-50%) scale(.4);opacity:1;}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0;}}
+.mpin-tag{background:rgba(200,8,22,.88);border:1px solid rgba(229,9,26,.5);border-radius:5px;padding:.26rem .58rem;font-size:.6rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:.3rem;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.5);}
+.mpin-ping{color:rgba(255,255,255,.5);font-weight:400;}
+
+/* ── PRICING ── */
+.pricing{position:relative;z-index:2;padding:1rem 0 5rem;}
+.phead{text-align:center;margin-bottom:2rem;}
+.pby{font-family:var(--ff);font-size:clamp(1.2rem,2.8vw,1.9rem);font-weight:700;color:#fff;margin-bottom:.35rem;}
+.pby b{font-weight:800;}
+.pline{width:90px;height:2px;background:var(--red);margin:.25rem auto 0;box-shadow:0 0 8px rgba(229,9,26,.6);}
+
+/* PLAN CARDS — 4 col grid */
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;}
+@media(max-width:900px){.plans{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.plans{grid-template-columns:repeat(2,1fr);gap:.5rem;}}
+
+.pc{
+  background:rgba(10,2,2,.92);
+  border:1px solid rgba(229,9,26,.15);
+  border-radius:9px;
+  padding:1.1rem 1rem;
   display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:all .32s cubic-bezier(.23,1,.32,1);
   height:100%;
 }
-.plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(229,9,26,.6),transparent);opacity:0;transition:opacity .3s;}
-.plan-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(229,9,26,.07),transparent 55%);opacity:0;transition:opacity .3s;pointer-events:none;}
-.plan-card:hover{border-color:rgba(229,9,26,.45);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 0 1px rgba(229,9,26,.1),0 0 30px rgba(229,9,26,.06);}
-.plan-card:hover::before,.plan-card:hover::after{opacity:1;}
-.plan-tier{font-size:.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.3rem;}
-.plan-loc{font-size:.72rem;color:var(--text2);margin-bottom:.7rem;display:flex;align-items:center;gap:.3rem;}
-.plan-price{font-size:2.1rem;font-weight:800;color:#fff;line-height:1;margin-bottom:1rem;}
-.plan-price sub{font-size:.82rem;font-weight:400;color:var(--text2);vertical-align:baseline;}
-.plan-specs{list-style:none;margin:0 0 1.2rem;display:flex;flex-direction:column;gap:.4rem;flex:1;}
-.plan-specs li{display:flex;align-items:center;gap:.55rem;font-size:.72rem;color:var(--text2);line-height:1.4;}
-.plan-specs li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 5px rgba(229,9,26,.7);flex-shrink:0;}
-.plan-btn{display:block;text-align:center;padding:.65rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:'Inter',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all .22s;letter-spacing:.3px;margin-top:auto;}
-.plan-btn:hover{background:var(--red2);box-shadow:0 0 20px rgba(229,9,26,.45);color:#fff;}
-/* popular badge */
-.plan-popular{position:absolute;top:-.5px;right:14px;background:var(--red);color:#fff;font-size:.54rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.22rem .6rem;border-radius:0 0 5px 5px;}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s;}
+.pc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% -10%,rgba(229,9,26,.09),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
+.pc:hover{border-color:rgba(229,9,26,.5);transform:translateY(-7px);box-shadow:0 22px 55px rgba(0,0,0,.8),0 0 30px rgba(229,9,26,.07);}
+.pc:hover::before,.pc:hover::after{opacity:1;}
+.pc-hot{border-color:rgba(229,9,26,.4)!important;}
+.pc-hot::after{opacity:.5!important;}
+.pc-badge{position:absolute;top:0;right:10px;background:var(--red);color:#fff;font-family:var(--ff);font-size:.48rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .55rem;border-radius:0 0 5px 5px;box-shadow:0 0 12px rgba(229,9,26,.5);}
+.pc-tier{font-family:var(--ff);font-size:.54rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.15rem;}
+.pc-loc{font-size:.65rem;color:var(--t2);margin-bottom:.5rem;}
+.pc-price{font-family:var(--ff);font-size:1.8rem;font-weight:800;color:#fff;line-height:1;letter-spacing:-1px;margin-bottom:.8rem;}
+.pc-price small{font-size:.7rem;font-weight:400;color:var(--t2);letter-spacing:0;}
+.pc-specs{list-style:none;display:flex;flex-direction:column;gap:.3rem;flex:1;margin-bottom:.85rem;}
+.pc-specs li{display:flex;align-items:center;gap:.45rem;font-size:.67rem;color:var(--t2);line-height:1.3;}
+.pc-specs li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--red);box-shadow:0 0 5px rgba(229,9,26,.8);flex-shrink:0;}
+.pc-btn{display:block;text-align:center;padding:.58rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--ff);font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .22s;letter-spacing:.5px;}
+.pc-btn:hover{background:var(--red2);box-shadow:0 0 20px rgba(229,9,26,.5);color:#fff;}
+@media(max-width:480px){.pc-price{font-size:1.4rem;}.pc-specs li{font-size:.62rem;}.pc{padding:.9rem .8rem;}}
 
-/* ══ STATS ══ */
-.stats-bar{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(229,9,26,.02);}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);}
-.sbox{padding:2rem 1.5rem;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
-.sbox:last-child{border-right:none;}
-.sbox:hover{background:rgba(229,9,26,.04);}
-.sbox::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--red);transition:width .4s;}
-.sbox:hover::after{width:100%;}
-.sbox-dot{width:4px;height:4px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);margin-bottom:.6rem;animation:bdot 2s ease-in-out infinite;}
-.sbox:nth-child(2) .sbox-dot{animation-delay:.5s;}
-.sbox:nth-child(3) .sbox-dot{animation-delay:1s;}
-.sbox:nth-child(4) .sbox-dot{animation-delay:1.5s;}
-.sbox-num{font-size:2.2rem;font-weight:800;color:#fff;line-height:1;margin-bottom:.2rem;}
-.sbox-lbl{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);}
+/* ── STATS ── */
+.statsbar{position:relative;z-index:2;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:rgba(229,9,26,.02);}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);}
+.sbi{padding:1.8rem 1.4rem;border-right:1px solid var(--bd);position:relative;overflow:hidden;transition:background .25s;}
+.sbi:last-child{border-right:none;}
+.sbi:hover{background:rgba(229,9,26,.04);}
+.sbi::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--red);transition:width .4s;}
+.sbi:hover::after{width:100%;}
+.sb-dot{width:4px;height:4px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);margin-bottom:.55rem;animation:blink 2s ease-in-out infinite;}
+.sbi:nth-child(2) .sb-dot{animation-delay:.5s;}
+.sbi:nth-child(3) .sb-dot{animation-delay:1s;}
+.sbi:nth-child(4) .sb-dot{animation-delay:1.5s;}
+.sb-n{font-family:var(--ff);font-size:2rem;font-weight:800;color:#fff;line-height:1;margin-bottom:.18rem;}
+.sb-l{font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);}
 @media(max-width:700px){
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-  .sbox:nth-child(2){border-right:none;}
-  .sbox:nth-child(3){border-right:1px solid var(--border);border-top:1px solid var(--border);}
-  .sbox:nth-child(4){border-right:none;border-top:1px solid var(--border);}
+  .srow{grid-template-columns:repeat(2,1fr);}
+  .sbi:nth-child(2){border-right:none;}
+  .sbi:nth-child(3){border-right:1px solid var(--bd);border-top:1px solid var(--bd);}
+  .sbi:nth-child(4){border-right:none;border-top:1px solid var(--bd);}
 }
 
-/* ══ FEATURES ══ */
-.feat-sec{position:relative;z-index:2;padding:5rem 0;}
-.feat-eyebrow{display:inline-block;padding:.28rem .85rem;background:rgba(229,9,26,.1);border:1px solid rgba(229,9,26,.25);border-radius:4px;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:1.1rem;}
-.feat-h{font-size:clamp(1.6rem,3.5vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:3rem;}
-.feat-h span{color:var(--red);}
-.feat-card{
-  border-radius:10px;overflow:hidden;
-  background:rgba(14,3,3,.8);
-  border:1px solid rgba(229,9,26,.14);
-  transition:all .3s;
-  position:relative;
-  min-height:320px;
+/* ── FEATURES 2×2 ── */
+.feats{position:relative;z-index:2;padding:5rem 0;}
+.feat-ey{display:inline-block;padding:.27rem .82rem;background:rgba(229,9,26,.09);border:1px solid rgba(229,9,26,.22);border-radius:100px;font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:1rem;}
+.feat-ht{font-family:var(--ff);font-size:clamp(1.5rem,3.2vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:2.2rem;}
+.feat-ht span{color:var(--red);}
+
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+@media(max-width:640px){.feat-grid{grid-template-columns:1fr;}}
+
+.fcard{
+  background:rgba(10,2,2,.9);
+  border:1px solid rgba(229,9,26,.13);
+  border-radius:10px;
+  height:260px;
   display:flex;flex-direction:column;justify-content:flex-end;
+  position:relative;overflow:hidden;
+  transition:all .32s cubic-bezier(.23,1,.32,1);
 }
-.feat-card:hover{border-color:rgba(229,9,26,.4);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 25px rgba(229,9,26,.07);}
-.feat-card:hover .feat-glow{opacity:1;}
-.feat-card:hover .feat-3d{transform:scale(1.05) translateY(-5px);filter:brightness(1.1);}
-.feat-num{position:absolute;top:1rem;left:1.2rem;font-size:.58rem;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.25);z-index:2;}
-/* 3D illustration area */
-.feat-3d-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.feat-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(229,9,26,.14),transparent 65%);opacity:0;transition:opacity .4s;}
-.feat-3d{transition:transform .4s,filter .4s;position:relative;z-index:1;}
-.feat-bottom{position:relative;z-index:2;padding:1.3rem;background:linear-gradient(to top,rgba(14,3,3,1) 60%,transparent);}
-.feat-icon-box{width:36px;height:36px;border-radius:7px;background:rgba(229,9,26,.15);border:1px solid rgba(229,9,26,.3);display:flex;align-items:center;justify-content:center;margin-bottom:.7rem;}
-.feat-card-title{font-size:.92rem;font-weight:700;margin-bottom:.3rem;}
-.feat-card-desc{font-size:.73rem;color:var(--text2);line-height:1.65;}
+.fcard:hover{border-color:rgba(229,9,26,.42);transform:translateY(-6px);box-shadow:0 20px 55px rgba(0,0,0,.75),0 0 25px rgba(229,9,26,.07);}
+.fcard:hover .fc-glow{opacity:1;}
+.fcard:hover .fc-art{transform:scale(1.07) translateY(-4px);filter:brightness(1.15) drop-shadow(0 0 14px rgba(229,9,26,.28));}
+.fc-num{position:absolute;top:.8rem;left:1rem;font-family:var(--ff);font-size:.52rem;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.2);z-index:2;}
+.fc-art-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:80px;}
+.fc-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,rgba(229,9,26,.18),transparent 60%);opacity:0;transition:opacity .35s;}
+.fc-art{transition:transform .4s cubic-bezier(.23,1,.32,1),filter .4s;position:relative;z-index:1;}
+.fc-bot{position:relative;z-index:2;padding:.9rem 1.1rem;background:linear-gradient(to top,rgba(10,2,2,1) 60%,transparent);flex-shrink:0;}
+.fc-icon{width:30px;height:30px;border-radius:7px;background:rgba(229,9,26,.14);border:1px solid rgba(229,9,26,.28);display:grid;place-items:center;margin-bottom:.5rem;font-size:.8rem;}
+.fc-title{font-family:var(--ff);font-size:.87rem;font-weight:700;margin-bottom:.22rem;}
+.fc-desc{font-size:.68rem;color:var(--t2);line-height:1.6;}
 
-/* ══ FOOTER ══ */
-footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:3rem 0 2rem;}
-.ft-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
-.ft-desc{font-size:.76rem;color:var(--text2);line-height:1.7;margin-top:.6rem;max-width:210px;}
-.ft-col h4{font-size:.57rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.85rem;}
-.ft-col a{display:block;color:var(--text2);text-decoration:none;font-size:.76rem;margin-bottom:.4rem;transition:color .2s;}
+/* ── FOOTER ── */
+footer{position:relative;z-index:2;border-top:1px solid var(--bd);padding:2.8rem 0 1.8rem;}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.ft-desc{font-size:.73rem;color:var(--t2);line-height:1.7;margin-top:.55rem;max-width:200px;}
+.ft-col h5{font-family:var(--ff);font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;}
+.ft-col a{display:block;color:var(--t2);text-decoration:none;font-size:.74rem;margin-bottom:.38rem;transition:color .2s;}
 .ft-col a:hover{color:#fff;}
-.ft-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid var(--border2);}
-.ft-bot p{font-size:.68rem;color:var(--text3);}
-.ft-status{display:flex;align-items:center;gap:.4rem;font-size:.68rem;color:var(--text3);}
-.ft-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:bdot 2s ease-in-out infinite;}
-@media(max-width:768px){.ft-row{grid-template-columns:1fr 1fr;}}
-@media(max-width:480px){.ft-row{grid-template-columns:1fr;}}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.4rem;border-top:1px solid var(--bd2);}
+.ft-bot p{font-size:.67rem;color:var(--t3);}
+.ft-status{display:flex;align-items:center;gap:.4rem;font-size:.67rem;color:var(--t3);}
+.fd-g{width:5px;height:5px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px #22c55e;animation:blink 2.5s ease-in-out infinite;}
+@media(max-width:768px){.ft-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:450px){.ft-grid{grid-template-columns:1fr;}}
 
-/* ══ AUTH ══ */
-.auth-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
-.auth-ov.open{opacity:1;pointer-events:all;}
-.auth-box{background:rgba(10,2,2,.98);border:1px solid rgba(229,9,26,.22);border-radius:10px;width:100%;max-width:390px;padding:2.1rem;position:relative;transform:scale(.93) translateY(18px);transition:transform .32s cubic-bezier(.23,1,.32,1);}
-.auth-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),#ff7070,transparent);border-radius:10px 10px 0 0;}
-.auth-ov.open .auth-box{transform:scale(1) translateY(0);}
-.auth-x{position:absolute;top:.8rem;right:.8rem;width:27px;height:27px;border-radius:5px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text2);font-size:.72rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.auth-x:hover{border-color:var(--red);color:var(--red);}
-.auth-tabs{display:flex;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:5px;overflow:hidden;margin:.4rem 0 1.4rem;}
-.atab{flex:1;padding:.5rem;background:transparent;border:none;color:var(--text2);font-family:'Inter',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;}
+/* ── AUTH MODAL ── */
+.aov{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(18px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.aov.open{opacity:1;pointer-events:all;}
+.abox{background:rgba(8,1,1,.98);border:1px solid rgba(229,9,26,.22);border-radius:11px;width:100%;max-width:380px;padding:2rem;position:relative;transform:scale(.93) translateY(18px);transition:transform .32s cubic-bezier(.23,1,.32,1);}
+.abox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),#ff8080,transparent);border-radius:11px 11px 0 0;}
+.aov.open .abox{transform:scale(1) translateY(0);}
+.ax{position:absolute;top:.75rem;right:.75rem;width:26px;height:26px;border-radius:5px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--t2);font-size:.7rem;cursor:pointer;display:grid;place-items:center;transition:all .2s;}
+.ax:hover{border-color:var(--red);color:var(--red);}
+.atabs{display:flex;background:rgba(255,255,255,.03);border:1px solid var(--bd2);border-radius:5px;overflow:hidden;margin:.3rem 0 1.3rem;}
+.atab{flex:1;padding:.48rem;background:transparent;border:none;color:var(--t2);font-family:var(--fb);font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;}
 .atab.on{background:var(--red);color:#fff;font-weight:600;}
-.af{margin-bottom:.8rem;}
-.af label{display:block;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:.35rem;}
-.ai{width:100%;padding:.7rem .9rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:5px;color:#fff;font-family:'Inter',sans-serif;font-size:.84rem;outline:none;transition:border-color .2s;}
-.ai:focus{border-color:rgba(229,9,26,.5);}
-.ai::placeholder{color:var(--text3);}
-.asub{width:100%;padding:.76rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .22s;margin-top:.25rem;}
+.af{margin-bottom:.75rem;}
+.af label{display:block;font-family:var(--ff);font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);margin-bottom:.32rem;}
+.ainp{width:100%;padding:.68rem .88rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:5px;color:#fff;font-family:var(--fb);font-size:.82rem;outline:none;transition:border-color .2s;}
+.ainp:focus{border-color:rgba(229,9,26,.5);}
+.ainp::placeholder{color:var(--t3);}
+.asub{width:100%;padding:.74rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--ff);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .22s;margin-top:.22rem;letter-spacing:.5px;}
 .asub:hover{background:var(--red2);}
 .asub:disabled{opacity:.5;cursor:not-allowed;}
-.a-or{display:flex;align-items:center;gap:.7rem;margin:.85rem 0;color:var(--text3);font-size:.7rem;}
-.a-or::before,.a-or::after{content:'';flex:1;height:1px;background:var(--border2);}
-.agoog{width:100%;padding:.7rem;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:5px;color:#fff;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;}
-.agoog:hover{background:rgba(255,255,255,.07);}
-.amsg{text-align:center;font-size:.7rem;margin-top:.55rem;min-height:.9rem;}
-.amsg.err{color:#ff6b6b;}.amsg.ok{color:#4ade80;}
+.aor{display:flex;align-items:center;gap:.65rem;margin:.8rem 0;color:var(--t3);font-size:.68rem;}
+.aor::before,.aor::after{content:'';flex:1;height:1px;background:var(--bd2);}
+.agoog{width:100%;padding:.68rem;background:rgba(255,255,255,.03);border:1px solid var(--bd2);border-radius:5px;color:#fff;font-family:var(--fb);font-size:.78rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;}
+.agoog:hover{background:rgba(255,255,255,.06);}
+.amsg{text-align:center;font-size:.68rem;margin-top:.5rem;min-height:.9rem;}
+.amsg.e{color:#ff6b6b;}.amsg.s{color:#4ade80;}
 
-/* WRAP */
-.wrap{max-width:1200px;margin:0 auto;padding:0 1.5rem;}
-
-/* REVEAL */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
+/* UTIL */
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.4rem;}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
 .rv.on{opacity:1;transform:translateY(0);}
-.rv1{transition-delay:.1s;}
-.rv2{transition-delay:.2s;}
-.rv3{transition-delay:.3s;}
+.rv2{transition-delay:.12s;}.rv3{transition-delay:.24s;}
 </style>
 
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut,onAuthStateChanged,updateProfile}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,updateProfile}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 const cfg={apiKey:"YOUR_API_KEY",authDomain:"YOUR.firebaseapp.com",projectId:"YOUR_PROJECT_ID",storageBucket:"YOUR.appspot.com",messagingSenderId:"ID",appId:"APP_ID"};
 const app=initializeApp(cfg);const auth=getAuth(app);const gp=new GoogleAuthProvider();
-const $=id=>document.getElementById(id);
-const openA=()=>$('aov').classList.add('open');
-const closeA=()=>{$('aov').classList.remove('open');msg('','');}
-window.openAuth=openA;
-$('ax')?.addEventListener('click',closeA);
-$('aov')?.addEventListener('click',e=>{if(e.target===$('aov'))closeA();});
-$('btnLogin')?.addEventListener('click',openA);
-$('btnReg')?.addEventListener('click',()=>{openA();$('tReg').click();});
-$('tLog')?.addEventListener('click',()=>{$('tLog').classList.add('on');$('tReg').classList.remove('on');$('fLog').style.display='block';$('fReg').style.display='none';msg('','');});
-$('tReg')?.addEventListener('click',()=>{$('tReg').classList.add('on');$('tLog').classList.remove('on');$('fReg').style.display='block';$('fLog').style.display='none';msg('','');});
-$('doLog')?.addEventListener('click',async()=>{
-  const e=$('le').value.trim(),p=$('lp').value,b=$('doLog');
-  if(!e||!p)return msg('Fill all fields','err');
+const $=s=>document.querySelector(s);
+const openA=()=>$('#aov').classList.add('open');
+const closeA=()=>{$('#aov').classList.remove('open');showMsg('','');}
+$('#ax')?.addEventListener('click',closeA);
+$('#aov')?.addEventListener('click',e=>{if(e.target===$('#aov'))closeA();});
+$('#btnL')?.addEventListener('click',openA);
+$('#btnR')?.addEventListener('click',()=>{openA();$('#tR').click();});
+$('#tL')?.addEventListener('click',()=>{$('#tL').classList.add('on');$('#tR').classList.remove('on');$('#fL').style.display='block';$('#fR').style.display='none';showMsg('','');});
+$('#tR')?.addEventListener('click',()=>{$('#tR').classList.add('on');$('#tL').classList.remove('on');$('#fR').style.display='block';$('#fL').style.display='none';showMsg('','');});
+$('#doL')?.addEventListener('click',async()=>{
+  const e=$('#le').value.trim(),p=$('#lp').value,b=$('#doL');
+  if(!e||!p)return showMsg('Fill all fields','e');
   b.disabled=true;b.textContent='Logging in...';
-  try{await signInWithEmailAndPassword(auth,e,p);closeA();}catch(er){msg(fe(er.code),'err');}
+  try{await signInWithEmailAndPassword(auth,e,p);closeA();}catch(er){showMsg(fe(er.code),'e');}
   b.disabled=false;b.textContent='Login →';
 });
-$('doReg')?.addEventListener('click',async()=>{
-  const n=$('rn').value.trim(),e=$('re').value.trim(),p=$('rp').value,b=$('doReg');
-  if(!n||!e||!p)return msg('Fill all fields','err');
-  if(p.length<6)return msg('Min 6 chars','err');
+$('#doR')?.addEventListener('click',async()=>{
+  const n=$('#rn').value.trim(),e=$('#re').value.trim(),p=$('#rp').value,b=$('#doR');
+  if(!n||!e||!p)return showMsg('Fill all fields','e');
+  if(p.length<6)return showMsg('Min 6 chars','e');
   b.disabled=true;b.textContent='Creating...';
-  try{const c=await createUserWithEmailAndPassword(auth,e,p);await updateProfile(c.user,{displayName:n});closeA();}catch(er){msg(fe(er.code),'err');}
+  try{const c=await createUserWithEmailAndPassword(auth,e,p);await updateProfile(c.user,{displayName:n});closeA();}catch(er){showMsg(fe(er.code),'e');}
   b.disabled=false;b.textContent='Register →';
 });
-['gl','gr'].forEach(id=>$(id)?.addEventListener('click',async()=>{try{await signInWithPopup(auth,gp);closeA();}catch(er){msg(fe(er.code),'err');}}));
-onAuthStateChanged(auth,u=>{
-  if(u){$('btnLogin').textContent='Dashboard';$('btnReg').style.display='none';}
-  else{$('btnLogin').textContent='Login';$('btnReg').style.display='';}
-});
-function msg(m,t){$('amsg').textContent=m;$('amsg').className='amsg '+t;}
+['#gL','#gR'].forEach(s=>$(s)?.addEventListener('click',async()=>{try{await signInWithPopup(auth,gp);closeA();}catch(er){showMsg(fe(er.code),'e');}}));
+onAuthStateChanged(auth,u=>{if(u){$('#btnL').textContent='Dashboard';$('#btnR').style.display='none';}else{$('#btnL').textContent='Login';$('#btnR').style.display='';}});
+function showMsg(m,t){$('#amsg').textContent=m;$('#amsg').className='amsg '+(t||'');}
 function fe(c){return{'auth/email-already-in-use':'Email already registered','auth/invalid-email':'Invalid email','auth/wrong-password':'Wrong password','auth/user-not-found':'No account found','auth/weak-password':'Password too weak','auth/invalid-credential':'Invalid credentials','auth/too-many-requests':'Too many attempts'}[c]||'Something went wrong';}
 </script>
 </head>
 <body>
-<canvas id="bgc"></canvas>
-<canvas id="ptc"></canvas>
-<div class="cur" id="cur"></div>
-<div class="cur-ring" id="curRing"></div>
+<canvas id="bg"></canvas>
+<canvas id="pt"></canvas>
+<div id="cur"></div><div id="curR"></div>
 
-<!-- AUTH MODAL -->
-<div class="auth-ov" id="aov">
-  <div class="auth-box">
-    <button class="auth-x" id="ax">✕</button>
-    <div style="text-align:center;margin-bottom:1.4rem;">
-      <a href="#" class="nav-logo" style="justify-content:center;text-decoration:none;">
-        <div class="nav-logo-icon">A</div><div class="nav-logo-text">Ace<span>RDP</span></div>
+<!-- AUTH -->
+<div class="aov" id="aov">
+  <div class="abox">
+    <button class="ax" id="ax">✕</button>
+    <div style="text-align:center;margin-bottom:1.2rem;">
+      <a href="#" class="logo" style="justify-content:center;text-decoration:none;display:inline-flex;">
+        <div class="logo-i">A</div><div class="logo-t">Ace<span>RDP</span></div>
       </a>
     </div>
-    <div class="auth-tabs">
-      <button class="atab on" id="tLog">Login</button>
-      <button class="atab" id="tReg">Register</button>
+    <div class="atabs"><button class="atab on" id="tL">Login</button><button class="atab" id="tR">Register</button></div>
+    <div id="fL">
+      <div class="af"><label>Email</label><input class="ainp" id="le" type="email" placeholder="you@example.com"/></div>
+      <div class="af"><label>Password</label><input class="ainp" id="lp" type="password" placeholder="••••••••"/></div>
+      <button class="asub" id="doL">Login →</button>
+      <div class="aor">or</div>
+      <button class="agoog" id="gL"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
     </div>
-    <div id="fLog">
-      <div class="af"><label>Email</label><input class="ai" id="le" type="email" placeholder="you@example.com"/></div>
-      <div class="af"><label>Password</label><input class="ai" id="lp" type="password" placeholder="••••••••"/></div>
-      <button class="asub" id="doLog">Login →</button>
-      <div class="a-or">or</div>
-      <button class="agoog" id="gl"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
-    </div>
-    <div id="fReg" style="display:none">
-      <div class="af"><label>Full Name</label><input class="ai" id="rn" type="text" placeholder="John Doe"/></div>
-      <div class="af"><label>Email</label><input class="ai" id="re" type="email" placeholder="you@example.com"/></div>
-      <div class="af"><label>Password</label><input class="ai" id="rp" type="password" placeholder="Min 6 characters"/></div>
-      <button class="asub" id="doReg">Register →</button>
-      <div class="a-or">or</div>
-      <button class="agoog" id="gr"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
+    <div id="fR" style="display:none">
+      <div class="af"><label>Full Name</label><input class="ainp" id="rn" type="text" placeholder="John Doe"/></div>
+      <div class="af"><label>Email</label><input class="ainp" id="re" type="email" placeholder="you@example.com"/></div>
+      <div class="af"><label>Password</label><input class="ainp" id="rp" type="password" placeholder="Min 6 characters"/></div>
+      <button class="asub" id="doR">Register →</button>
+      <div class="aor">or</div>
+      <button class="agoog" id="gR"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
     </div>
     <p class="amsg" id="amsg"></p>
   </div>
@@ -300,439 +354,334 @@ function fe(c){return{'auth/email-already-in-use':'Email already registered','au
 
 <!-- NAV -->
 <nav id="mn">
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-icon">A</div>
-    <div class="nav-logo-text">Ace<span>RDP</span></div>
-  </a>
-  <div class="nav-links">
-    <a href="#overview" class="active">Overview</a>
+  <a href="#" class="logo"><div class="logo-i">A</div><div class="logo-t">Ace<span>RDP</span></div></a>
+  <div class="nl">
+    <a href="#hero" class="on">Overview</a>
     <a href="#pricing">Pricing</a>
     <a href="#features">Features</a>
   </div>
-  <div class="nav-right">
-    <button class="btn-reg" id="btnReg">Register</button>
-    <button class="btn-log" id="btnLogin">Login</button>
-    <button class="hamburger" id="hbg"><span></span><span></span><span></span></button>
+  <div class="nr">
+    <button class="btn-g" id="btnR">Register</button>
+    <button class="btn-r" id="btnL">Login</button>
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
   </div>
 </nav>
-<div class="mob-menu" id="mmenu">
-  <a href="#overview">Overview</a>
-  <a href="#pricing">Pricing</a>
-  <a href="#features">Features</a>
+<div class="mmenu" id="mm">
+  <a href="#hero">Overview</a><a href="#pricing">Pricing</a><a href="#features">Features</a>
 </div>
 
 <!-- HERO -->
-<section class="hero" id="overview">
-  <div class="hero-bg-text hbt-l">99%</div>
-  <div class="hero-bg-text hbt-r">NL</div>
-  <div class="hero-badge"><div class="hero-badge-dot"></div>99.5% Uptime Guarantee</div>
-  <h1>Your High-Performance Hosting Solution<br><em>Secure.</em>Scalable.<em>Reliable.</em></h1>
-  <p class="hero-sub">Built for developers, businesses, and anyone who needs hosting that just works.</p>
-  <a href="#pricing" class="btn-signup">Sign Up
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-  </a>
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-scan"></div>
+
+  <!-- floating live badges -->
+  <div class="fbadge fb1"><div class="fd g"></div>Server Online — US East</div>
+  <div class="fbadge fb2"><div class="fd r"></div>99.9% Uptime SLA</div>
+  <div class="fbadge fb3"><div class="fd g"></div>NVMe SSD — 10 Gbit</div>
+
+  <div class="hero-inner">
+    <div class="hero-chip"><div class="chip-dot"></div>High-Performance Hosting</div>
+    <h1>
+      <span class="w">Your </span><span class="r">High-Performance</span><br>
+      <span class="w">Hosting </span><span class="hero-tw">Solution</span>
+    </h1>
+    <p class="hero-sub">Built for developers, businesses, and anyone who needs hosting that just works — fast, secure, scalable.</p>
+    <div class="hero-btns">
+      <a href="#pricing" class="hero-btn-main">Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </a>
+      <a href="#features" class="hero-btn-out">See Features</a>
+    </div>
+    <!-- live hero stats -->
+    <div class="hero-stats">
+      <div class="hs-item"><div class="hs-n" id="hn1">0</div><div class="hs-l">Uptime</div></div>
+      <div class="hs-item"><div class="hs-n" id="hn2">0</div><div class="hs-l">Servers</div></div>
+      <div class="hs-item"><div class="hs-n" id="hn3">0</div><div class="hs-l">Clients</div></div>
+      <div class="hs-item"><div class="hs-n">24/7</div><div class="hs-l">Support</div></div>
+    </div>
+  </div>
 </section>
 
-<!-- OS TICKER — with proper SVG logos -->
-<div class="ticker-wrap">
-  <div class="ticker-track">
-    <!-- SET 1 -->
-    <div class="t-item">
-      <!-- Debian swirl -->
-      <svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" fill="#A81D33"/><path d="M50 15c-19.3 0-35 15.7-35 35s15.7 35 35 35 35-15.7 35-35S69.3 15 50 15zm0 8c5.5 0 10.6 1.6 14.9 4.4-1.8-.3-3.7-.4-5.6-.1-8.2 1.1-14.5 7.8-14.3 16 .1 4.3 2 8.1 4.9 10.8-1.4.2-2.7.3-3.9.1-6.7-.9-11.4-7.1-10.5-13.8.7-5.3 4.8-9.4 10-10.5-1.8-3.9-1.5-8.3.5-11.9-7.5 4.2-12.6 12.2-12.6 21.4 0 13.3 10.7 24 24 24 1.4 0 2.8-.1 4.1-.4C55.3 73.8 49 72.3 44 68.7c-5.8-4.1-9.6-10.7-9.6-18.2 0-12.3 9.7-22.4 21.9-22.5z" fill="white"/></svg>
-      Debian
-    </div>
-    <div class="t-item">
-      <!-- Windows flag -->
-      <svg viewBox="0 0 100 100"><rect x="5" y="5" width="42" height="42" fill="#F25022"/><rect x="53" y="5" width="42" height="42" fill="#7FBA00"/><rect x="5" y="53" width="42" height="42" fill="#00A4EF"/><rect x="53" y="53" width="42" height="42" fill="#FFB900"/></svg>
-      Windows
-    </div>
-    <div class="t-item">
-      <!-- Ubuntu circle of friends -->
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#E95420"/><circle cx="50" cy="50" r="18" fill="none" stroke="white" stroke-width="7"/><circle cx="50" cy="15" r="9" fill="white"/><circle cx="80.3" cy="67.5" r="9" fill="white"/><circle cx="19.7" cy="67.5" r="9" fill="white"/></svg>
-      Ubuntu
-    </div>
-    <div class="t-item">
-      <!-- CentOS -->
-      <svg viewBox="0 0 100 100"><polygon points="50,5 95,50 50,95 5,50" fill="#932279"/><polygon points="50,5 50,50 5,50" fill="#EE4023"/><polygon points="95,50 50,50 50,95" fill="#EE4023"/><polygon points="50,5 95,50 50,50" fill="#9DCE25"/><polygon points="5,50 50,50 50,95" fill="#9DCE25"/><rect x="36" y="36" width="28" height="28" fill="#932279"/></svg>
-      CentOS
-    </div>
-    <div class="t-item">
-      <!-- Rocky Linux -->
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#10B981"/><path d="M50 20L75 65H25L50 20Z" fill="white" opacity=".9"/><circle cx="50" cy="55" r="12" fill="#10B981"/></svg>
-      Rocky Linux
-    </div>
-    <div class="t-item">
-      <!-- openSUSE chameleon-ish -->
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#73BA25"/><text x="50" y="62" text-anchor="middle" fill="white" font-size="38" font-weight="900" font-family="Arial">S</text></svg>
-      openSUSE
-    </div>
-    <div class="t-item">
-      <!-- Fedora -->
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#294172"/><text x="50" y="66" text-anchor="middle" fill="white" font-size="52" font-weight="900" font-family="Arial">f</text></svg>
-      Fedora
-    </div>
-    <div class="t-item">
-      <!-- Windows Server -->
-      <svg viewBox="0 0 100 100"><rect x="5" y="5" width="42" height="42" fill="#0078D4"/><rect x="53" y="5" width="42" height="42" fill="#0078D4" opacity=".7"/><rect x="5" y="53" width="42" height="42" fill="#0078D4" opacity=".7"/><rect x="53" y="53" width="42" height="42" fill="#0078D4" opacity=".4"/><text x="50" y="67" text-anchor="middle" fill="white" font-size="22" font-weight="700" font-family="Arial">SVR</text></svg>
-      Windows Server
-    </div>
-    <!-- SET 2 (duplicate for infinite) -->
-    <div class="t-item">
-      <svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" fill="#A81D33"/><path d="M50 15c-19.3 0-35 15.7-35 35s15.7 35 35 35 35-15.7 35-35S69.3 15 50 15zm0 8c5.5 0 10.6 1.6 14.9 4.4-1.8-.3-3.7-.4-5.6-.1-8.2 1.1-14.5 7.8-14.3 16 .1 4.3 2 8.1 4.9 10.8-1.4.2-2.7.3-3.9.1-6.7-.9-11.4-7.1-10.5-13.8.7-5.3 4.8-9.4 10-10.5-1.8-3.9-1.5-8.3.5-11.9-7.5 4.2-12.6 12.2-12.6 21.4 0 13.3 10.7 24 24 24 1.4 0 2.8-.1 4.1-.4C55.3 73.8 49 72.3 44 68.7c-5.8-4.1-9.6-10.7-9.6-18.2 0-12.3 9.7-22.4 21.9-22.5z" fill="white"/></svg>
-      Debian
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><rect x="5" y="5" width="42" height="42" fill="#F25022"/><rect x="53" y="5" width="42" height="42" fill="#7FBA00"/><rect x="5" y="53" width="42" height="42" fill="#00A4EF"/><rect x="53" y="53" width="42" height="42" fill="#FFB900"/></svg>
-      Windows
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#E95420"/><circle cx="50" cy="50" r="18" fill="none" stroke="white" stroke-width="7"/><circle cx="50" cy="15" r="9" fill="white"/><circle cx="80.3" cy="67.5" r="9" fill="white"/><circle cx="19.7" cy="67.5" r="9" fill="white"/></svg>
-      Ubuntu
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><polygon points="50,5 95,50 50,95 5,50" fill="#932279"/><polygon points="50,5 50,50 5,50" fill="#EE4023"/><polygon points="95,50 50,50 50,95" fill="#EE4023"/><polygon points="50,5 95,50 50,50" fill="#9DCE25"/><polygon points="5,50 50,50 50,95" fill="#9DCE25"/><rect x="36" y="36" width="28" height="28" fill="#932279"/></svg>
-      CentOS
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#10B981"/><path d="M50 20L75 65H25L50 20Z" fill="white" opacity=".9"/><circle cx="50" cy="55" r="12" fill="#10B981"/></svg>
-      Rocky Linux
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#73BA25"/><text x="50" y="62" text-anchor="middle" fill="white" font-size="38" font-weight="900" font-family="Arial">S</text></svg>
-      openSUSE
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#294172"/><text x="50" y="66" text-anchor="middle" fill="white" font-size="52" font-weight="900" font-family="Arial">f</text></svg>
-      Fedora
-    </div>
-    <div class="t-item">
-      <svg viewBox="0 0 100 100"><rect x="5" y="5" width="42" height="42" fill="#0078D4"/><rect x="53" y="5" width="42" height="42" fill="#0078D4" opacity=".7"/><rect x="5" y="53" width="42" height="42" fill="#0078D4" opacity=".7"/><rect x="53" y="53" width="42" height="42" fill="#0078D4" opacity=".4"/><text x="50" y="67" text-anchor="middle" fill="white" font-size="22" font-weight="700" font-family="Arial">SVR</text></svg>
-      Windows Server
-    </div>
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tick-track">
+    <!-- OS logos SET 1 -->
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#A81D33"/><path d="M50 18c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32S67.7 18 50 18zm0 6c4.8 0 9.3 1.4 13.1 3.8-1.6-.3-3.2-.3-4.9-.1-7.4 1-13.1 7.1-12.9 14.5.1 3.9 1.8 7.4 4.4 9.8-1.2.2-2.4.2-3.5.1-6-.8-10.3-6.4-9.5-12.5.6-4.8 4.3-8.5 9-9.5-1.6-3.5-1.4-7.5.5-10.8-6.8 3.8-11.4 11-11.4 19.4 0 12.1 9.7 21.8 21.8 21.8 1.3 0 2.5-.1 3.7-.4-3.8-.9-8.4-2.1-12.3-4.9-5.3-3.7-8.7-9.7-8.7-16.5 0-11.2 8.8-20.3 19.8-20.4z" fill="white"/></svg>Debian</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><rect x="4" y="4" width="43" height="43" fill="#F25022"/><rect x="53" y="4" width="43" height="43" fill="#7FBA00"/><rect x="4" y="53" width="43" height="43" fill="#00A4EF"/><rect x="53" y="53" width="43" height="43" fill="#FFB900"/></svg>Windows</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#E95420"/><circle cx="50" cy="50" r="16" fill="none" stroke="white" stroke-width="7"/><circle cx="50" cy="14" r="8" fill="white"/><circle cx="78.4" cy="66" r="8" fill="white"/><circle cx="21.6" cy="66" r="8" fill="white"/></svg>Ubuntu</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><polygon points="50,4 96,50 50,96 4,50" fill="#932279"/><polygon points="50,4 50,50 4,50" fill="#EE4023"/><polygon points="96,50 50,50 50,96" fill="#EE4023"/><polygon points="50,4 96,50 50,50" fill="#9DCE25"/><polygon points="4,50 50,50 50,96" fill="#9DCE25"/><rect x="37" y="37" width="26" height="26" fill="#932279"/></svg>CentOS</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#10B981"/><path d="M50 18L78 66H22L50 18Z" fill="white" opacity=".9"/><circle cx="50" cy="56" r="11" fill="#10B981"/></svg>Rocky Linux</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#73BA25"/><text x="50" y="65" text-anchor="middle" fill="white" font-size="42" font-weight="900" font-family="Arial">S</text></svg>openSUSE</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#294172"/><text x="50" y="68" text-anchor="middle" fill="white" font-size="55" font-weight="900" font-family="Arial">f</text></svg>Fedora</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><rect x="4" y="4" width="43" height="43" fill="#0078D4"/><rect x="53" y="4" width="43" height="43" fill="#0078D4" opacity=".7"/><rect x="4" y="53" width="43" height="43" fill="#0078D4" opacity=".55"/><rect x="53" y="53" width="43" height="43" fill="#0078D4" opacity=".35"/></svg>Windows Server</div>
+    <!-- SET 2 duplicate -->
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#A81D33"/><path d="M50 18c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32S67.7 18 50 18zm0 6c4.8 0 9.3 1.4 13.1 3.8-1.6-.3-3.2-.3-4.9-.1-7.4 1-13.1 7.1-12.9 14.5.1 3.9 1.8 7.4 4.4 9.8-1.2.2-2.4.2-3.5.1-6-.8-10.3-6.4-9.5-12.5.6-4.8 4.3-8.5 9-9.5-1.6-3.5-1.4-7.5.5-10.8-6.8 3.8-11.4 11-11.4 19.4 0 12.1 9.7 21.8 21.8 21.8 1.3 0 2.5-.1 3.7-.4-3.8-.9-8.4-2.1-12.3-4.9-5.3-3.7-8.7-9.7-8.7-16.5 0-11.2 8.8-20.3 19.8-20.4z" fill="white"/></svg>Debian</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><rect x="4" y="4" width="43" height="43" fill="#F25022"/><rect x="53" y="4" width="43" height="43" fill="#7FBA00"/><rect x="4" y="53" width="43" height="43" fill="#00A4EF"/><rect x="53" y="53" width="43" height="43" fill="#FFB900"/></svg>Windows</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#E95420"/><circle cx="50" cy="50" r="16" fill="none" stroke="white" stroke-width="7"/><circle cx="50" cy="14" r="8" fill="white"/><circle cx="78.4" cy="66" r="8" fill="white"/><circle cx="21.6" cy="66" r="8" fill="white"/></svg>Ubuntu</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><polygon points="50,4 96,50 50,96 4,50" fill="#932279"/><polygon points="50,4 50,50 4,50" fill="#EE4023"/><polygon points="96,50 50,50 50,96" fill="#EE4023"/><polygon points="50,4 96,50 50,50" fill="#9DCE25"/><polygon points="4,50 50,50 50,96" fill="#9DCE25"/><rect x="37" y="37" width="26" height="26" fill="#932279"/></svg>CentOS</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#10B981"/><path d="M50 18L78 66H22L50 18Z" fill="white" opacity=".9"/><circle cx="50" cy="56" r="11" fill="#10B981"/></svg>Rocky Linux</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#73BA25"/><text x="50" y="65" text-anchor="middle" fill="white" font-size="42" font-weight="900" font-family="Arial">S</text></svg>openSUSE</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#294172"/><text x="50" y="68" text-anchor="middle" fill="white" font-size="55" font-weight="900" font-family="Arial">f</text></svg>Fedora</div>
+    <div class="ti"><svg viewBox="0 0 100 100"><rect x="4" y="4" width="43" height="43" fill="#0078D4"/><rect x="53" y="4" width="43" height="43" fill="#0078D4" opacity=".7"/><rect x="4" y="53" width="43" height="43" fill="#0078D4" opacity=".55"/><rect x="53" y="53" width="43" height="43" fill="#0078D4" opacity=".35"/></svg>Windows Server</div>
   </div>
 </div>
 
 <!-- WORLD MAP + PRICING -->
-<section class="pricing-sec" id="pricing">
+<section class="pricing" id="pricing">
   <div class="wrap">
-    <!-- World Map -->
-    <div class="rv" style="padding:1rem 0 2rem;">
-      <p class="map-label">Choose your preferred server location</p>
-      <div class="map-container">
-        <canvas id="wmCanvas" width="680" height="360"></canvas>
-        <div class="mpin" style="left:24%;top:40%;">
-          <div class="mpin-dot"><div class="mpin-ring"></div></div>
-          <div class="mpin-tag">🇺🇸 USA <span class="mpin-ping">· 367ms</span></div>
-        </div>
-        <div class="mpin" style="left:53%;top:26%;">
-          <div class="mpin-dot" style="animation-delay:.4s;"><div class="mpin-ring" style="animation-delay:.4s;"></div></div>
-          <div class="mpin-tag">🇳🇱 NL <span class="mpin-ping">· 317ms</span></div>
-        </div>
-        <div class="mpin" style="left:51%;top:22%;">
-          <div class="mpin-dot" style="background:#888;box-shadow:none;animation-delay:.8s;"><div class="mpin-ring" style="border-color:rgba(150,150,150,.3);animation-delay:.8s;"></div></div>
-          <div class="mpin-tag" style="background:rgba(60,60,60,.88);border-color:rgba(100,100,100,.4);">🇩🇪 DE</div>
-        </div>
+    <div class="map-wrap rv">
+      <p class="map-lbl">Choose your preferred server location</p>
+      <div class="map-inner">
+        <canvas id="wmc" width="660" height="350"></canvas>
+        <div class="mpin" style="left:23%;top:40%;"><div class="mpin-d"><div class="mpin-r"></div></div><div class="mpin-tag">🇺🇸 USA <span class="mpin-ping">· 367ms</span></div></div>
+        <div class="mpin" style="left:52%;top:27%;"><div class="mpin-d" style="animation-delay:.5s;"><div class="mpin-r" style="animation-delay:.5s;"></div></div><div class="mpin-tag">🇳🇱 NL <span class="mpin-ping">· 317ms</span></div></div>
+        <div class="mpin" style="left:50%;top:23%;"><div class="mpin-d" style="background:#666;box-shadow:none;"><div class="mpin-r" style="border-color:rgba(120,120,120,.3);"></div></div><div class="mpin-tag" style="background:rgba(50,50,50,.88);border-color:rgba(100,100,100,.4);">🇩🇪 DE</div></div>
       </div>
     </div>
 
-    <!-- Pricing head -->
-    <div class="pricing-head rv">
-      <p class="powered-by">Powered by <b>Ryzen 9 7950X</b></p>
-      <div class="red-line"></div>
+    <div class="phead rv">
+      <p class="pby">Powered by <b>Ryzen 9 7950X</b></p>
+      <div class="pline"></div>
     </div>
 
-    <!-- Row 1: 4 cards -->
-    <div class="row g-3 rv">
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Bronze</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€12 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>2 Cores</li><li>6 GB DDR5 RAM</li><li>40 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+    <!-- ROW 1: 4 plans -->
+    <div class="plans rv" style="margin-bottom:.75rem;">
+      <div class="pc">
+        <p class="pc-tier">Bronze</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€12 <small>/month</small></p>
+        <ul class="pc-specs"><li>2 Cores</li><li>6 GB DDR5 RAM</li><li>40 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Silver</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€20 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>4 Cores</li><li>8 GB DDR5 RAM</li><li>60 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc">
+        <p class="pc-tier">Silver</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€20 <small>/month</small></p>
+        <ul class="pc-specs"><li>4 Cores</li><li>8 GB DDR5 RAM</li><li>60 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card" style="border-color:rgba(229,9,26,.4);">
-          <span class="plan-popular">Popular</span>
-          <p class="plan-tier">Gold</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€30 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>6 Cores</li><li>12 GB DDR5 RAM</li><li>80 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc pc-hot">
+        <span class="pc-badge">Popular</span>
+        <p class="pc-tier">Gold</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€30 <small>/month</small></p>
+        <ul class="pc-specs"><li>6 Cores</li><li>12 GB DDR5 RAM</li><li>80 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Platinum</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€40 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>8 Cores</li><li>16 GB DDR5 RAM</li><li>100 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc">
+        <p class="pc-tier">Platinum</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€40 <small>/month</small></p>
+        <ul class="pc-specs"><li>8 Cores</li><li>16 GB DDR5 RAM</li><li>100 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
     </div>
 
-    <!-- Row 2 -->
-    <div class="row g-3 rv rv1" style="margin-top:.75rem!important;">
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Diamond</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€50 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>10 Cores</li><li>20 GB DDR5 RAM</li><li>120 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+    <!-- ROW 2: 4 plans -->
+    <div class="plans rv rv2">
+      <div class="pc">
+        <p class="pc-tier">Diamond</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€50 <small>/month</small></p>
+        <ul class="pc-specs"><li>10 Cores</li><li>20 GB DDR5 RAM</li><li>120 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Titanium</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€60 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>12 Cores</li><li>24 GB DDR5 RAM</li><li>140 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc">
+        <p class="pc-tier">Titanium</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€60 <small>/month</small></p>
+        <ul class="pc-specs"><li>12 Cores</li><li>24 GB DDR5 RAM</li><li>140 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card">
-          <p class="plan-tier">Obsidian</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€70 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>14 Cores</li><li>28 GB DDR5 RAM</li><li>160 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc">
+        <p class="pc-tier">Obsidian</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€70 <small>/month</small></p>
+        <ul class="pc-specs"><li>14 Cores</li><li>28 GB DDR5 RAM</li><li>160 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="plan-card" style="border-color:rgba(229,9,26,.35);">
-          <p class="plan-tier">Legend</p>
-          <p class="plan-loc">🇺🇸 US</p>
-          <p class="plan-price">€80 <sub>/month</sub></p>
-          <ul class="plan-specs">
-            <li>16 Cores</li><li>32 GB DDR5 RAM</li><li>180 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz Base (5.7 GHz Turbo)</li>
-          </ul>
-          <a href="#" class="plan-btn">Buy Now</a>
-        </div>
+      <div class="pc pc-hot">
+        <p class="pc-tier">Legend</p><p class="pc-loc">🇺🇸 US</p>
+        <p class="pc-price">€80 <small>/month</small></p>
+        <ul class="pc-specs"><li>16 Cores</li><li>32 GB DDR5 RAM</li><li>180 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
+        <a href="#" class="pc-btn">Buy Now</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<div class="stats-bar rv">
-  <div class="stats-row">
-    <div class="sbox"><div class="sbox-dot"></div><div class="sbox-num" data-target="99.9" data-suffix="%" data-dec="1">0</div><div class="sbox-lbl">Uptime SLA</div></div>
-    <div class="sbox"><div class="sbox-dot"></div><div class="sbox-num" data-target="5000" data-suffix="+">0</div><div class="sbox-lbl">Active Servers</div></div>
-    <div class="sbox"><div class="sbox-dot"></div><div class="sbox-num" data-target="12000" data-suffix="+">0</div><div class="sbox-lbl">Happy Clients</div></div>
-    <div class="sbox"><div class="sbox-dot"></div><div class="sbox-num" data-target="24" data-suffix="/7">0</div><div class="sbox-lbl">Support</div></div>
+<div class="statsbar rv">
+  <div class="srow">
+    <div class="sbi"><div class="sb-dot"></div><div class="sb-n" data-t="99.9" data-s="%" data-d="1">0</div><div class="sb-l">Uptime SLA</div></div>
+    <div class="sbi"><div class="sb-dot"></div><div class="sb-n" data-t="5000" data-s="+">0</div><div class="sb-l">Active Servers</div></div>
+    <div class="sbi"><div class="sb-dot"></div><div class="sb-n" data-t="12000" data-s="+">0</div><div class="sb-l">Happy Clients</div></div>
+    <div class="sbi"><div class="sb-dot"></div><div class="sb-n">24/7</div><div class="sb-l">Support</div></div>
   </div>
 </div>
 
-<!-- FEATURES -->
-<section class="feat-sec" id="features">
+<!-- FEATURES 2x2 -->
+<section class="feats" id="features">
   <div class="wrap">
     <div class="text-center rv">
-      <span class="feat-eyebrow">Features</span>
-      <h2 class="feat-h">Performance You Can <span>Trust</span><br><span>Features</span> You'll Rely On</h2>
+      <span class="feat-ey">Features</span>
+      <h2 class="feat-ht">Performance You Can <span>Trust</span><br><span>Features</span> You'll Rely On</h2>
     </div>
-    <div class="row g-3">
-      <!-- Card 1 — Affordable Pricing: credit card 3D illustration -->
-      <div class="col-md-6 rv">
-        <div class="feat-card">
-          <div class="feat-glow"></div>
-          <div class="feat-3d-wrap">
-            <div class="feat-3d">
-              <svg width="200" height="160" viewBox="0 0 200 160">
-                <!-- card shadow -->
-                <rect x="25" y="40" width="150" height="95" rx="12" fill="rgba(0,0,0,.5)" transform="translate(6,8)"/>
-                <!-- main card -->
-                <rect x="25" y="32" width="150" height="95" rx="12" fill="url(#cg1)"/>
-                <!-- card shine -->
-                <rect x="25" y="32" width="150" height="40" rx="12" fill="rgba(255,255,255,.06)"/>
-                <!-- chip -->
-                <rect x="42" y="55" width="28" height="22" rx="4" fill="url(#cg2)"/>
-                <line x1="42" y1="64" x2="70" y2="64" stroke="rgba(0,0,0,.3)" stroke-width="1"/>
-                <line x1="56" y1="55" x2="56" y2="77" stroke="rgba(0,0,0,.3)" stroke-width="1"/>
-                <!-- contactless -->
-                <path d="M82 63 Q87 58 87 66 Q87 74 82 69" stroke="rgba(255,255,255,.5)" stroke-width="1.5" fill="none"/>
-                <path d="M86 60 Q94 55 94 66 Q94 77 86 72" stroke="rgba(255,255,255,.35)" stroke-width="1.5" fill="none"/>
-                <!-- number -->
-                <text x="42" y="100" fill="rgba(255,255,255,.7)" font-size="9" font-family="monospace" letter-spacing="2">•••• •••• •••• 4921</text>
-                <!-- name -->
-                <text x="42" y="115" fill="rgba(255,255,255,.5)" font-size="7" font-family="Inter,sans-serif">YOUR NAME</text>
-                <!-- brand circles -->
-                <circle cx="148" cy="105" r="11" fill="#EB001B" opacity=".85"/>
-                <circle cx="161" cy="105" r="11" fill="#F79E1B" opacity=".85"/>
-                <!-- floating coin -->
-                <circle cx="168" cy="42" r="16" fill="url(#cg3)"/>
-                <text x="168" y="47" text-anchor="middle" fill="white" font-size="14" font-weight="700">€</text>
-                <defs>
-                  <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#1a0505"/>
-                    <stop offset="100%" stop-color="#3d0808"/>
-                  </linearGradient>
-                  <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#c8a84b"/>
-                    <stop offset="100%" stop-color="#8a6a20"/>
-                  </linearGradient>
-                  <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#e5091a"/>
-                    <stop offset="100%" stop-color="#8b0000"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+    <div class="feat-grid">
+
+      <!-- 1: Credit card -->
+      <div class="fcard rv">
+        <div class="fc-glow"></div>
+        <div class="fc-art-wrap">
+          <div class="fc-art">
+            <svg width="185" height="130" viewBox="0 0 185 130">
+              <defs>
+                <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e0505"/><stop offset="100%" stop-color="#3a0808"/></linearGradient>
+                <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4a843"/><stop offset="100%" stop-color="#8a6520"/></linearGradient>
+              </defs>
+              <!-- shadow -->
+              <rect x="20" y="30" width="145" height="90" rx="11" fill="rgba(0,0,0,.5)" transform="translate(5,7)"/>
+              <!-- card -->
+              <rect x="20" y="22" width="145" height="90" rx="11" fill="url(#cg)" stroke="rgba(229,9,26,.25)" stroke-width="1"/>
+              <rect x="20" y="22" width="145" height="36" rx="11" fill="rgba(255,255,255,.04)"/>
+              <!-- stripe -->
+              <rect x="20" y="45" width="145" height="18" fill="rgba(0,0,0,.35)"/>
+              <!-- chip -->
+              <rect x="35" y="52" width="26" height="20" rx="4" fill="url(#chip)"/>
+              <line x1="35" y1="61" x2="61" y2="61" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>
+              <line x1="48" y1="52" x2="48" y2="72" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>
+              <!-- contactless -->
+              <path d="M72 60 Q76 56 76 62 Q76 68 72 64" stroke="rgba(255,255,255,.45)" stroke-width="1.4" fill="none"/>
+              <path d="M75 57 Q82 53 82 62 Q82 71 75 67" stroke="rgba(255,255,255,.3)" stroke-width="1.4" fill="none"/>
+              <!-- number -->
+              <text x="35" y="94" fill="rgba(255,255,255,.65)" font-size="8" font-family="monospace" letter-spacing="2">•••• •••• •••• 7291</text>
+              <text x="35" y="105" fill="rgba(255,255,255,.4)" font-size="6.5" font-family="monospace">YOUR NAME</text>
+              <!-- mastercard circles -->
+              <circle cx="143" cy="98" r="10" fill="#EB001B" opacity=".85"/>
+              <circle cx="155" cy="98" r="10" fill="#F79E1B" opacity=".85"/>
+              <!-- floating € coin -->
+              <circle cx="162" cy="28" r="15" fill="rgba(229,9,26,.9)" stroke="rgba(255,100,100,.3)" stroke-width="1.5">
+                <animate attributeName="cy" values="28;22;28" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <text x="162" y="33" text-anchor="middle" fill="white" font-size="13" font-weight="800">€</text>
+            </svg>
           </div>
-          <div class="feat-num">01</div>
-          <div class="feat-bottom">
-            <div class="feat-icon-box">💳</div>
-            <p class="feat-card-title">Affordable Pricing</p>
-            <p class="feat-card-desc">We deliver top-quality services at fair, competitive prices to ensure you get the best value for your investment.</p>
-          </div>
+        </div>
+        <div class="fc-num">01</div>
+        <div class="fc-bot">
+          <div class="fc-icon">💳</div>
+          <p class="fc-title">Affordable Pricing</p>
+          <p class="fc-desc">Top-quality services at fair prices — best value for your investment.</p>
         </div>
       </div>
 
-      <!-- Card 2 — High Performance: server rack illustration -->
-      <div class="col-md-6 rv rv1">
-        <div class="feat-card">
-          <div class="feat-glow"></div>
-          <div class="feat-3d-wrap">
-            <div class="feat-3d">
-              <svg width="200" height="160" viewBox="0 0 200 160">
-                <!-- server rack -->
-                <rect x="50" y="20" width="100" height="120" rx="6" fill="rgba(30,5,5,.9)" stroke="rgba(229,9,26,.3)" stroke-width="1"/>
-                <!-- rack units -->
-                <rect x="57" y="28" width="86" height="18" rx="3" fill="rgba(229,9,26,.12)" stroke="rgba(229,9,26,.25)" stroke-width=".8"/>
-                <rect x="57" y="50" width="86" height="18" rx="3" fill="rgba(229,9,26,.08)" stroke="rgba(229,9,26,.2)" stroke-width=".8"/>
-                <rect x="57" y="72" width="86" height="18" rx="3" fill="rgba(229,9,26,.12)" stroke="rgba(229,9,26,.25)" stroke-width=".8"/>
-                <rect x="57" y="94" width="86" height="18" rx="3" fill="rgba(229,9,26,.08)" stroke="rgba(229,9,26,.2)" stroke-width=".8"/>
-                <rect x="57" y="116" width="86" height="16" rx="3" fill="rgba(229,9,26,.05)" stroke="rgba(229,9,26,.15)" stroke-width=".8"/>
-                <!-- LED indicators row 1 -->
-                <circle cx="66" cy="37" r="3" fill="#22c55e"><animate attributeName="opacity" values="1;.3;1" dur="1.2s" repeatCount="indefinite"/></circle>
-                <circle cx="75" cy="37" r="3" fill="#22c55e"><animate attributeName="opacity" values="1;.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
-                <circle cx="84" cy="37" r="3" fill="#e5091a"><animate attributeName="opacity" values=".4;1;.4" dur="2s" repeatCount="indefinite"/></circle>
-                <!-- disk slots row 1 -->
-                <rect x="100" y="31" width="14" height="12" rx="2" fill="rgba(255,255,255,.08)"/>
-                <rect x="117" y="31" width="14" height="12" rx="2" fill="rgba(255,255,255,.08)"/>
-                <rect x="100" y="53" width="14" height="12" rx="2" fill="rgba(255,255,255,.08)"/>
-                <rect x="117" y="53" width="14" height="12" rx="2" fill="rgba(255,255,255,.08)"/>
-                <!-- power btn -->
-                <circle cx="131" cy="103" r="5" fill="none" stroke="rgba(229,9,26,.6)" stroke-width="1.5"/>
-                <line x1="131" y1="98" x2="131" y2="101" stroke="rgba(229,9,26,.7)" stroke-width="1.5"/>
-                <!-- lightning bolt -->
-                <text x="152" y="50" fill="rgba(229,9,26,.8)" font-size="28" font-weight="900">⚡</text>
-                <!-- glow lines -->
-                <line x1="18" y1="80" x2="48" y2="80" stroke="rgba(229,9,26,.4)" stroke-width="1" stroke-dasharray="3,3"><animate attributeName="stroke-dashoffset" values="0;-12" dur="1s" repeatCount="indefinite"/></line>
-                <line x1="152" y1="80" x2="182" y2="80" stroke="rgba(229,9,26,.4)" stroke-width="1" stroke-dasharray="3,3"><animate attributeName="stroke-dashoffset" values="0;12" dur="1s" repeatCount="indefinite"/></line>
-              </svg>
-            </div>
+      <!-- 2: Server rack -->
+      <div class="fcard rv rv2">
+        <div class="fc-glow"></div>
+        <div class="fc-art-wrap">
+          <div class="fc-art">
+            <svg width="180" height="130" viewBox="0 0 180 130">
+              <!-- rack frame -->
+              <rect x="45" y="15" width="90" height="105" rx="6" fill="rgba(25,4,4,.95)" stroke="rgba(229,9,26,.28)" stroke-width="1"/>
+              <!-- units -->
+              <rect x="52" y="22" width="76" height="16" rx="3" fill="rgba(229,9,26,.1)" stroke="rgba(229,9,26,.22)" stroke-width=".7"/>
+              <rect x="52" y="42" width="76" height="16" rx="3" fill="rgba(229,9,26,.07)" stroke="rgba(229,9,26,.18)" stroke-width=".7"/>
+              <rect x="52" y="62" width="76" height="16" rx="3" fill="rgba(229,9,26,.1)" stroke="rgba(229,9,26,.22)" stroke-width=".7"/>
+              <rect x="52" y="82" width="76" height="16" rx="3" fill="rgba(229,9,26,.07)" stroke="rgba(229,9,26,.18)" stroke-width=".7"/>
+              <rect x="52" y="102" width="76" height="12" rx="3" fill="rgba(229,9,26,.05)" stroke="rgba(229,9,26,.12)" stroke-width=".7"/>
+              <!-- LEDs row1 -->
+              <circle cx="60" cy="30" r="2.5" fill="#22c55e"><animate attributeName="opacity" values="1;.2;1" dur="1.1s" repeatCount="indefinite"/></circle>
+              <circle cx="68" cy="30" r="2.5" fill="#22c55e"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
+              <circle cx="76" cy="30" r="2.5" fill="#e5091a"><animate attributeName="opacity" values=".3;1;.3" dur="2s" repeatCount="indefinite"/></circle>
+              <!-- LEDs row2 -->
+              <circle cx="60" cy="50" r="2.5" fill="#22c55e"><animate attributeName="opacity" values="1;.2;1" dur="1.8s" repeatCount="indefinite"/></circle>
+              <circle cx="68" cy="50" r="2.5" fill="#22c55e"><animate attributeName="opacity" values="1;.3;1" dur="1.2s" repeatCount="indefinite"/></circle>
+              <!-- drive slots -->
+              <rect x="95" y="25" width="12" height="10" rx="2" fill="rgba(255,255,255,.07)"/>
+              <rect x="110" y="25" width="12" height="10" rx="2" fill="rgba(255,255,255,.07)"/>
+              <rect x="95" y="45" width="12" height="10" rx="2" fill="rgba(255,255,255,.07)"/>
+              <rect x="110" y="45" width="12" height="10" rx="2" fill="rgba(255,255,255,.07)"/>
+              <!-- power btn -->
+              <circle cx="122" cy="90" r="5" fill="none" stroke="rgba(229,9,26,.6)" stroke-width="1.4"/>
+              <line x1="122" y1="85.5" x2="122" y2="88.5" stroke="rgba(229,9,26,.7)" stroke-width="1.4"/>
+              <!-- animated data lines -->
+              <line x1="10" y1="72" x2="43" y2="72" stroke="rgba(229,9,26,.45)" stroke-width="1" stroke-dasharray="3,3"><animate attributeName="stroke-dashoffset" values="0;-12" dur=".8s" repeatCount="indefinite"/></line>
+              <line x1="137" y1="72" x2="170" y2="72" stroke="rgba(229,9,26,.45)" stroke-width="1" stroke-dasharray="3,3"><animate attributeName="stroke-dashoffset" values="0;12" dur=".8s" repeatCount="indefinite"/></line>
+            </svg>
           </div>
-          <div class="feat-num">02</div>
-          <div class="feat-bottom">
-            <div class="feat-icon-box">⚡</div>
-            <p class="feat-card-title">High Performance &amp; Easy to Setup</p>
-            <p class="feat-card-desc">Our servers are built for speed, reliability, and security, ensuring your applications run smoothly around the clock.</p>
-          </div>
+        </div>
+        <div class="fc-num">02</div>
+        <div class="fc-bot">
+          <div class="fc-icon">⚡</div>
+          <p class="fc-title">High Performance & Easy Setup</p>
+          <p class="fc-desc">Built for speed, reliability and security — runs smoothly 24/7.</p>
         </div>
       </div>
 
-      <!-- Card 3 — DDoS Protection: shield -->
-      <div class="col-md-6 rv rv2">
-        <div class="feat-card">
-          <div class="feat-glow"></div>
-          <div class="feat-3d-wrap">
-            <div class="feat-3d">
-              <svg width="200" height="160" viewBox="0 0 200 160">
-                <!-- shield -->
-                <path d="M100 18 L162 42 L162 92 Q162 132 100 148 Q38 132 38 92 L38 42 Z" fill="url(#sg1)" stroke="rgba(229,9,26,.4)" stroke-width="1.5"/>
-                <path d="M100 28 L152 48 L152 92 Q152 126 100 140 Q48 126 48 92 L48 48 Z" fill="rgba(229,9,26,.08)"/>
-                <!-- checkmark -->
-                <path d="M72 88 L88 104 L128 68" stroke="rgba(229,9,26,.9)" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <animate attributeName="stroke-dasharray" values="0,100;80,100" dur="1.5s" fill="freeze"/>
-                </path>
-                <!-- orbiting particles -->
-                <circle cx="100" cy="83" r="55" fill="none" stroke="rgba(229,9,26,.08)" stroke-width="1" stroke-dasharray="4,8"/>
-                <circle cx="155" cy="83" r="4" fill="rgba(229,9,26,.7)">
-                  <animateTransform attributeName="transform" type="rotate" values="0 100 83;360 100 83" dur="4s" repeatCount="indefinite"/>
-                </circle>
-                <defs>
-                  <linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="rgba(229,9,26,.2)"/>
-                    <stop offset="100%" stop-color="rgba(100,3,10,.3)"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+      <!-- 3: Shield -->
+      <div class="fcard rv rv2">
+        <div class="fc-glow"></div>
+        <div class="fc-art-wrap">
+          <div class="fc-art">
+            <svg width="170" height="130" viewBox="0 0 170 130">
+              <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(229,9,26,.22)"/><stop offset="100%" stop-color="rgba(100,3,10,.28)"/></linearGradient></defs>
+              <!-- outer ring -->
+              <circle cx="85" cy="68" r="50" fill="none" stroke="rgba(229,9,26,.08)" stroke-width="1" stroke-dasharray="5,10"/>
+              <!-- shield -->
+              <path d="M85 16 L136 36 L136 78 Q136 112 85 125 Q34 112 34 78 L34 36 Z" fill="url(#sg)" stroke="rgba(229,9,26,.38)" stroke-width="1.5"/>
+              <path d="M85 25 L126 43 L126 78 Q126 107 85 118 Q44 107 44 78 L44 43 Z" fill="rgba(229,9,26,.06)"/>
+              <!-- checkmark draw -->
+              <path d="M65 72 L78 85 L108 58" stroke="rgba(229,9,26,.95)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80">
+                <animate attributeName="stroke-dashoffset" values="80;0" dur="1.5s" fill="freeze" begin="0s"/>
+              </path>
+              <!-- orbiting dot -->
+              <circle cx="135" cy="68" r="4" fill="rgba(229,9,26,.75)">
+                <animateTransform attributeName="transform" type="rotate" values="0 85 68;360 85 68" dur="4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="35" cy="68" r="3" fill="rgba(229,9,26,.45)">
+                <animateTransform attributeName="transform" type="rotate" values="180 85 68;540 85 68" dur="5s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
           </div>
-          <div class="feat-num">03</div>
-          <div class="feat-bottom">
-            <div class="feat-icon-box">🛡️</div>
-            <p class="feat-card-title">DDoS Protection</p>
-            <p class="feat-card-desc">Enterprise-grade DDoS mitigation on every plan. Your services stay online no matter the attack volume.</p>
-          </div>
+        </div>
+        <div class="fc-num">03</div>
+        <div class="fc-bot">
+          <div class="fc-icon">🛡️</div>
+          <p class="fc-title">DDoS Protection</p>
+          <p class="fc-desc">Enterprise-grade mitigation on every plan — stay online no matter what.</p>
         </div>
       </div>
 
-      <!-- Card 4 — Full Root Access: terminal -->
-      <div class="col-md-6 rv rv3">
-        <div class="feat-card">
-          <div class="feat-glow"></div>
-          <div class="feat-3d-wrap">
-            <div class="feat-3d">
-              <svg width="220" height="165" viewBox="0 0 220 165">
-                <!-- terminal window -->
-                <rect x="20" y="18" width="180" height="120" rx="8" fill="rgba(8,2,2,.95)" stroke="rgba(229,9,26,.3)" stroke-width="1.2"/>
-                <!-- title bar -->
-                <rect x="20" y="18" width="180" height="22" rx="8" fill="rgba(229,9,26,.1)"/>
-                <rect x="20" y="30" width="180" height="10" fill="rgba(229,9,26,.1)"/>
-                <circle cx="35" cy="29" r="4" fill="#ff5f56"/>
-                <circle cx="48" cy="29" r="4" fill="#ffbd2e"/>
-                <circle cx="61" cy="29" r="4" fill="#27c93f"/>
-                <!-- terminal text -->
-                <text x="30" y="60" fill="rgba(229,9,26,.8)" font-size="9" font-family="monospace">root@acerdp:~$</text>
-                <text x="120" y="60" fill="rgba(255,255,255,.7)" font-size="9" font-family="monospace">sudo su -</text>
-                <text x="30" y="76" fill="rgba(100,200,100,.8)" font-size="9" font-family="monospace">[sudo] password: ••••••••</text>
-                <text x="30" y="92" fill="rgba(229,9,26,.8)" font-size="9" font-family="monospace">root@acerdp:~#</text>
-                <text x="130" y="92" fill="rgba(255,255,255,.7)" font-size="9" font-family="monospace">apt update</text>
-                <text x="30" y="108" fill="rgba(100,200,100,.65)" font-size="8.5" font-family="monospace">Hit:1 http://deb.debian.org...</text>
-                <!-- blinking cursor -->
-                <rect x="30" y="116" width="7" height="10" fill="rgba(229,9,26,.9)">
-                  <animate attributeName="opacity" values="1;0;1" dur=".9s" repeatCount="indefinite"/>
-                </rect>
-              </svg>
-            </div>
-          </div>
-          <div class="feat-num">04</div>
-          <div class="feat-bottom">
-            <div class="feat-icon-box">🔧</div>
-            <p class="feat-card-title">Full Root Access</p>
-            <p class="feat-card-desc">Complete control over your VPS with full root/admin access. Install any OS, any software, any configuration.</p>
+      <!-- 4: Terminal -->
+      <div class="fcard rv rv3">
+        <div class="fc-glow"></div>
+        <div class="fc-art-wrap">
+          <div class="fc-art">
+            <svg width="200" height="135" viewBox="0 0 200 135">
+              <!-- window -->
+              <rect x="15" y="10" width="170" height="112" rx="8" fill="rgba(6,1,1,.96)" stroke="rgba(229,9,26,.28)" stroke-width="1.2"/>
+              <!-- title bar -->
+              <rect x="15" y="10" width="170" height="20" rx="8" fill="rgba(229,9,26,.09)"/>
+              <rect x="15" y="22" width="170" height="8" fill="rgba(229,9,26,.09)"/>
+              <circle cx="28" cy="20" r="4" fill="#ff5f56"/>
+              <circle cx="40" cy="20" r="4" fill="#ffbd2e"/>
+              <circle cx="52" cy="20" r="4" fill="#27c93f"/>
+              <text x="85" y="23" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="7" font-family="monospace">bash — 80×24</text>
+              <!-- lines -->
+              <text x="26" y="48" fill="rgba(229,9,26,.85)" font-size="8.5" font-family="monospace">root@acerdp:~#</text>
+              <text x="110" y="48" fill="rgba(255,255,255,.7)" font-size="8.5" font-family="monospace">apt update</text>
+              <text x="26" y="63" fill="rgba(80,200,80,.75)" font-size="8" font-family="monospace">Hit:1 http://deb.debian.org stable</text>
+              <text x="26" y="77" fill="rgba(80,200,80,.55)" font-size="8" font-family="monospace">Reading package lists... Done</text>
+              <text x="26" y="91" fill="rgba(229,9,26,.85)" font-size="8.5" font-family="monospace">root@acerdp:~#</text>
+              <text x="110" y="91" fill="rgba(255,255,255,.7)" font-size="8.5" font-family="monospace">neofetch</text>
+              <text x="26" y="106" fill="rgba(229,9,26,.5)" font-size="8" font-family="monospace">OS: Debian 12 x86_64</text>
+              <!-- cursor blink -->
+              <rect x="26" y="112" width="7" height="9" fill="rgba(229,9,26,.9)"><animate attributeName="opacity" values="1;0;1" dur=".9s" repeatCount="indefinite"/></rect>
+            </svg>
           </div>
         </div>
+        <div class="fc-num">04</div>
+        <div class="fc-bot">
+          <div class="fc-icon">🔧</div>
+          <p class="fc-title">Full Root Access</p>
+          <p class="fc-desc">Complete control — install any OS, any software, any configuration.</p>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -740,21 +689,18 @@ function fe(c){return{'auth/email-already-in-use':'Email already registered','au
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <div class="ft-row">
+    <div class="ft-grid">
       <div>
-        <a href="#" class="nav-logo" style="text-decoration:none;">
-          <div class="nav-logo-icon">A</div>
-          <div class="nav-logo-text">Ace<span>RDP</span></div>
-        </a>
-        <p class="ft-desc">High-performance VPS & RDP hosting powered by the latest AMD Ryzen processors with NVMe storage.</p>
+        <a href="#" class="logo" style="text-decoration:none;"><div class="logo-i">A</div><div class="logo-t">Ace<span>RDP</span></div></a>
+        <p class="ft-desc">High-performance VPS & RDP hosting powered by AMD Ryzen 9 with NVMe storage and 10 Gbit uplink.</p>
       </div>
-      <div class="ft-col"><h4>Services</h4><a href="#">VPS Hosting</a><a href="#">RDP Hosting</a><a href="#">Dedicated Servers</a><a href="#">DDoS Protection</a></div>
-      <div class="ft-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a></div>
-      <div class="ft-col"><h4>Support</h4><a href="#">Knowledge Base</a><a href="#">Open Ticket</a><a href="#">Server Status</a><a href="#">Terms</a></div>
+      <div class="ft-col"><h5>Services</h5><a href="#">VPS Hosting</a><a href="#">RDP Hosting</a><a href="#">Dedicated Servers</a><a href="#">DDoS Protection</a></div>
+      <div class="ft-col"><h5>Company</h5><a href="#">About Us</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a></div>
+      <div class="ft-col"><h5>Support</h5><a href="#">Knowledge Base</a><a href="#">Open Ticket</a><a href="#">Server Status</a><a href="#">Terms</a></div>
     </div>
     <div class="ft-bot">
       <p>© 2025 AceRDP. All rights reserved.</p>
-      <div class="ft-status"><div class="ft-dot"></div>All Systems Operational</div>
+      <div class="ft-status"><div class="fd-g"></div>All Systems Operational</div>
     </div>
   </div>
 </footer>
@@ -762,130 +708,139 @@ function fe(c){return{'auth/email-already-in-use':'Email already registered','au
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // CURSOR
-const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+const cur=document.getElementById('cur'),cr=document.getElementById('curR');
 if(window.matchMedia('(pointer:fine)').matches){
   let mx=0,my=0,rx=0,ry=0;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-  (function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+  (function L(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(L);})();
 }
 
-// BG CANVAS — deep red glow orbs exactly like video
-(function(){
-  const cv=document.getElementById('bgc'),ctx=cv.getContext('2d');
-  const r=()=>{cv.width=window.innerWidth;cv.height=window.innerHeight;};
-  r();window.addEventListener('resize',r);
-  const orbs=[
-    {x:.06,y:.12,r:.72,c:[229,9,26],s:.00022,p:0},
-    {x:.94,y:.22,r:.62,c:[180,5,18],s:.00018,p:1.8},
-    {x:.5,y:.96,r:.66,c:[229,9,26],s:.00028,p:3.2},
-    {x:.88,y:.74,r:.5,c:[200,6,22],s:.0003,p:.6},
-    {x:.12,y:.66,r:.48,c:[229,9,26],s:.00025,p:2.1},
+// BG CANVAS
+(()=>{
+  const cv=document.getElementById('bg'),c=cv.getContext('2d');
+  const r=()=>{cv.width=innerWidth;cv.height=innerHeight;};r();
+  window.addEventListener('resize',r);
+  const O=[
+    {x:.06,y:.1,r:.72,c:[229,9,26],s:.00022,p:0},
+    {x:.94,y:.22,r:.6,c:[180,5,18],s:.00018,p:1.8},
+    {x:.5,y:.95,r:.65,c:[229,9,26],s:.00028,p:3.2},
+    {x:.88,y:.72,r:.5,c:[200,6,22],s:.0003,p:.6},
+    {x:.12,y:.65,r:.48,c:[229,9,26],s:.00025,p:2.1},
     {x:.44,y:.44,r:.35,c:[140,3,12],s:.00038,p:4.5},
   ];
   let t=0;
-  (function draw(){
-    t++;ctx.clearRect(0,0,cv.width,cv.height);
-    ctx.fillStyle='#080808';ctx.fillRect(0,0,cv.width,cv.height);
-    orbs.forEach(o=>{
+  (function D(){
+    t++;c.clearRect(0,0,cv.width,cv.height);
+    c.fillStyle='#060606';c.fillRect(0,0,cv.width,cv.height);
+    O.forEach(o=>{
       const wx=Math.sin(t*o.s+o.p)*.1,wy=Math.cos(t*o.s*.65+o.p)*.09;
-      const cx=(o.x+wx)*cv.width,cy=(o.y+wy)*cv.height,rad=o.r*Math.min(cv.width,cv.height);
-      const[rv,g,b]=o.c,g2=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
-      g2.addColorStop(0,`rgba(${rv},${g},${b},.25)`);
-      g2.addColorStop(.38,`rgba(${rv},${g},${b},.08)`);
+      const cx=(o.x+wx)*cv.width,cy=(o.y+wy)*cv.height,rd=o.r*Math.min(cv.width,cv.height);
+      const[rv,g,b]=o.c,g2=c.createRadialGradient(cx,cy,0,cx,cy,rd);
+      g2.addColorStop(0,`rgba(${rv},${g},${b},.23)`);
+      g2.addColorStop(.4,`rgba(${rv},${g},${b},.07)`);
       g2.addColorStop(1,`rgba(${rv},${g},${b},0)`);
-      ctx.fillStyle=g2;ctx.fillRect(0,0,cv.width,cv.height);
+      c.fillStyle=g2;c.fillRect(0,0,cv.width,cv.height);
     });
-    requestAnimationFrame(draw);
+    requestAnimationFrame(D);
   })();
 })();
 
 // PARTICLE CANVAS
-(function(){
-  const cv=document.getElementById('ptc'),ctx=cv.getContext('2d');
-  const r=()=>{cv.width=window.innerWidth;cv.height=window.innerHeight;};
-  r();window.addEventListener('resize',r);
-  const pts=Array.from({length:65},()=>({
-    x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,
-    r:Math.random()*.85+.15,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,
-    a:Math.random()*.35+.07,red:Math.random()>.5
+(()=>{
+  const cv=document.getElementById('pt'),c=cv.getContext('2d');
+  const r=()=>{cv.width=innerWidth;cv.height=innerHeight;};r();
+  window.addEventListener('resize',r);
+  const P=Array.from({length:60},()=>({
+    x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+    r:Math.random()*.8+.15,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,
+    a:Math.random()*.32+.06,red:Math.random()>.5
   }));
-  (function draw(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    pts.forEach(p=>{
+  (function D(){
+    c.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{
       p.x+=p.vx;p.y+=p.vy;
       if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;
       if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=p.red?`rgba(229,9,26,${p.a})`:`rgba(255,255,255,${p.a*.35})`;
-      ctx.fill();
+      c.beginPath();c.arc(p.x,p.y,p.r,0,Math.PI*2);
+      c.fillStyle=p.red?`rgba(229,9,26,${p.a})`:`rgba(255,255,255,${p.a*.3})`;
+      c.fill();
     });
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<95){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(229,9,26,${.035*(1-d/95)})`;ctx.lineWidth=.3;ctx.stroke();}
+    for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
+      const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){c.beginPath();c.moveTo(P[i].x,P[i].y);c.lineTo(P[j].x,P[j].y);c.strokeStyle=`rgba(229,9,26,${.032*(1-d/90)})`;c.lineWidth=.3;c.stroke();}
     }
-    requestAnimationFrame(draw);
+    requestAnimationFrame(D);
   })();
 })();
 
-// WORLD MAP DOT CANVAS
-(function(){
-  const cv=document.getElementById('wmCanvas'),ctx=cv.getContext('2d');
-  const W=680,H=360;cv.width=W;cv.height=H;
-  function ll(lon,lat){return[(lon+180)*(W/360),(90-lat)*(H/180)];}
-  // More realistic continent dot clusters
-  const continents=[
-    // North America
-    ...[[-125,49],[-120,45],[-115,42],[-110,42],[-105,45],[-100,48],[-95,48],[-90,45],[-85,42],[-80,38],[-75,40],[-70,42],[-68,45],[-95,38],[-100,35],[-105,35],[-110,35],[-115,35],[-120,38],[-125,38],[-120,32],[-115,30],[-105,30],[-100,30],[-95,30],[-90,32],[-85,30],[-80,30],[-75,38],[-90,38],[-105,52],[-110,52],[-115,52],[-120,52],[-125,52],[-130,55],[-120,58],[-110,60],[-100,55],[-90,52],[-80,48],[-75,45],[-90,42],[-95,42]].map(([a,b])=>[a+Math.random()*3-1.5,b+Math.random()*3-1.5]),
-    // South America
-    ...[[-70,-12],[-65,-8],[-60,-5],[-55,-3],[-50,-2],[-45,-5],[-40,-8],[-38,-12],[-40,-18],[-43,-22],[-46,-25],[-50,-30],[-55,-35],[-60,-40],[-65,-45],[-68,-50],[-65,-55],[-60,-30],[-65,-20],[-70,-20],[-72,-15],[-75,-10],[-77,-5],[-78,-2],[-75,2],[-72,5]].map(([a,b])=>[a+Math.random()*3-1.5,b+Math.random()*3-1.5]),
-    // Europe
-    ...[[2,48],[5,50],[8,52],[12,52],[15,50],[18,50],[20,48],[22,45],[25,44],[28,45],[30,52],[25,58],[20,60],[15,58],[10,55],[5,55],[-2,52],[0,52],[-5,48],[2,52],[8,48],[12,48],[15,52],[18,52],[10,50],[5,48],[0,48],[25,50],[30,48],[35,42],[30,40],[25,38],[20,38],[15,40],[10,42],[5,42],[-2,44],[30,60],[25,62],[20,65],[15,68],[10,62]].map(([a,b])=>[a+Math.random()*2-1,b+Math.random()*2-1]),
-    // Africa
-    ...[[0,15],[5,12],[10,10],[15,8],[20,5],[25,2],[30,-2],[35,-5],[38,-10],[35,-15],[32,-20],[28,-25],[25,-30],[20,-35],[15,-30],[10,-25],[5,-18],[2,-10],[-5,5],[-10,10],[-15,12],[-10,15],[-5,18],[0,20],[5,22],[10,22],[15,20],[20,18],[25,15],[30,12],[35,10],[38,5],[40,0],[38,15],[35,18],[30,22],[25,25],[20,25],[15,22],[10,20],[5,18],[0,15],[40,-5],[38,-10],[35,-18]].map(([a,b])=>[a+Math.random()*3-1.5,b+Math.random()*3-1.5]),
-    // Asia
-    ...[[50,25],[55,28],[60,30],[65,32],[70,35],[75,35],[80,32],[85,28],[90,25],[95,22],[100,18],[105,15],[110,12],[115,25],[120,30],[125,35],[130,38],[135,35],[140,38],[145,42],[140,45],[135,48],[130,50],[125,52],[120,50],[115,48],[110,45],[105,42],[100,40],[95,38],[90,42],[85,38],[80,35],[75,38],[70,40],[65,38],[60,35],[55,32],[50,30],[60,25],[65,28],[70,28],[75,28],[80,28],[85,25],[90,22],[95,18],[100,12],[105,10],[110,8],[115,5],[120,2],[125,5],[130,8],[135,12],[140,15],[145,18],[140,22],[135,25],[130,28],[125,30],[120,35],[115,35],[110,35],[105,35],[100,35],[95,32],[90,30],[85,32],[80,30],[75,32],[70,32],[65,32],[60,32],[55,35],[50,35],[45,25],[42,20],[40,15],[38,20],[35,25],[42,28],[45,30],[48,32],[52,30],[58,28],[62,25],[68,22],[72,18],[78,15],[82,12],[88,10],[92,8],[98,5],[102,2],[108,0],[112,-2],[118,-5],[122,-2],[128,0],[132,5],[138,8],[142,12],[148,15],[150,18],[148,22],[144,25],[140,28],[136,32],[132,35],[128,38],[124,40],[120,42],[116,45],[112,42],[108,38],[104,35],[100,32],[96,28],[92,25],[88,22]].map(([a,b])=>[a+Math.random()*2-1,b+Math.random()*2-1]),
-    // Australia
-    ...[[114,-22],[118,-20],[122,-18],[126,-15],[130,-12],[135,-12],[140,-15],[145,-18],[148,-22],[150,-25],[148,-30],[145,-35],[140,-38],[135,-38],[130,-35],[125,-32],[120,-30],[115,-28],[112,-25],[118,-25],[122,-22],[126,-20],[130,-18],[135,-18],[140,-22],[145,-25],[148,-28],[145,-32],[140,-35],[135,-32],[130,-28],[125,-25],[120,-25]].map(([a,b])=>[a+Math.random()*2-1,b+Math.random()*2-1]),
+// WORLD MAP
+(()=>{
+  const cv=document.getElementById('wmc'),c=cv.getContext('2d'),W=660,H=350;
+  cv.width=W;cv.height=H;
+  const ll=(lon,lat)=>[(lon+180)*(W/360),(90-lat)*(H/180)];
+  const dots=[
+    ...Array.from({length:110},()=>[-130+Math.random()*80,25+Math.random()*45]),
+    ...Array.from({length:75},()=>[-80+Math.random()*40,-55+Math.random()*70]),
+    ...Array.from({length:85},()=>[-10+Math.random()*50,35+Math.random()*32]),
+    ...Array.from({length:90},()=>[-18+Math.random()*55,-35+Math.random()*72]),
+    ...Array.from({length:185},()=>[40+Math.random()*110,5+Math.random()*62]),
+    ...Array.from({length:48},()=>[114+Math.random()*38,-43+Math.random()*33]),
   ];
-  continents.forEach(([lon,lat])=>{
+  dots.forEach(([lon,lat])=>{
     const[x,y]=ll(lon,lat);
-    ctx.beginPath();ctx.arc(x,y,1.4,0,Math.PI*2);
-    ctx.fillStyle='rgba(229,9,26,.32)';ctx.fill();
+    c.beginPath();c.arc(x,y,1.4,0,Math.PI*2);
+    c.fillStyle='rgba(229,9,26,.3)';c.fill();
   });
-  // subtle grid
-  ctx.strokeStyle='rgba(229,9,26,.05)';ctx.lineWidth=.5;
-  for(let x=0;x<W;x+=W/12){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-  for(let y=0;y<H;y+=H/6){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  c.strokeStyle='rgba(229,9,26,.05)';c.lineWidth=.5;
+  for(let x=0;x<W;x+=W/12){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
+  for(let y=0;y<H;y+=H/6){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
 })();
 
-// NAV SCROLL
+// NAV scroll
 window.addEventListener('scroll',()=>{
-  document.getElementById('mn').classList.toggle('solid',scrollY>60);
-  // active links
-  ['overview','pricing','features'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    const r=el.getBoundingClientRect();
-    const a=document.querySelector(`.nav-links a[href="#${id}"]`);
-    if(a)a.classList.toggle('active',r.top<=80&&r.bottom>80);
+  document.getElementById('mn').classList.toggle('dark',scrollY>60);
+  ['hero','pricing','features'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const b=el.getBoundingClientRect();
+    const a=document.querySelector(`.nl a[href="#${id}"]`);
+    if(a)a.classList.toggle('on',b.top<=80&&b.bottom>80);
   });
 });
 
 // HAMBURGER
-const hbg=document.getElementById('hbg'),mm=document.getElementById('mmenu');
-hbg.addEventListener('click',()=>{hbg.classList.toggle('open');mm.classList.toggle('open');});
-mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{hbg.classList.remove('open');mm.classList.remove('open');}));
+const hbg=document.getElementById('hbg'),mm=document.getElementById('mm');
+hbg.addEventListener('click',()=>{hbg.classList.toggle('x');mm.classList.toggle('open');});
+mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{hbg.classList.remove('x');mm.classList.remove('open');}));
 
-// COUNTER
-function runCount(el){
-  const tgt=parseFloat(el.dataset.target),suf=el.dataset.suffix||'',dec=parseInt(el.dataset.dec||0);
-  let s=0;const T=50,timer=setInterval(()=>{s++;const v=tgt*s/T;el.textContent=(dec?v.toFixed(dec):Math.floor(v).toLocaleString())+suf;if(s>=T){el.textContent=(dec?tgt.toFixed(dec):tgt.toLocaleString())+suf;clearInterval(timer);}},2000/T);
-}
-new IntersectionObserver(ens=>{ens.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-target]').forEach(runCount);}});},{threshold:.3}).observe(document.querySelector('.stats-bar'));
+// HERO COUNTERS — fire on load
+window.addEventListener('load',()=>{
+  const run=(el,tgt,suf,dec,delay)=>setTimeout(()=>{
+    let s=0;const T=50,tm=setInterval(()=>{s++;const v=tgt*s/T;
+      el.textContent=(dec?v.toFixed(dec):Math.floor(v).toLocaleString())+suf;
+      if(s>=T){el.textContent=(dec?tgt.toFixed(dec):tgt.toLocaleString())+suf;clearInterval(tm);}
+    },2000/T);
+  },delay);
+  run(document.getElementById('hn1'),99.9,'%',1,600);
+  run(document.getElementById('hn2'),5000,'+',0,800);
+  run(document.getElementById('hn3'),12000,'+',0,1000);
+});
+
+// STATS BAR counters
+new IntersectionObserver(ens=>{
+  ens.forEach(e=>{if(e.isIntersecting){
+    e.target.querySelectorAll('[data-t]').forEach(el=>{
+      const tgt=parseFloat(el.dataset.t),s=el.dataset.s||'',d=parseInt(el.dataset.d||0);
+      let i=0;const T=50,tm=setInterval(()=>{i++;const v=tgt*i/T;
+        el.textContent=(d?v.toFixed(d):Math.floor(v).toLocaleString())+s;
+        if(i>=T){el.textContent=(d?tgt.toFixed(d):tgt.toLocaleString())+s;clearInterval(tm);}
+      },2000/T);
+    });
+  }});
+},{threshold:.3}).observe(document.querySelector('.statsbar'));
 
 // REVEAL
 document.querySelectorAll('.rv').forEach(el=>{
-  new IntersectionObserver(ens=>{ens.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});},{threshold:.08}).observe(el);
+  new IntersectionObserver(ens=>{ens.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});},{threshold:.07}).observe(el);
 });
 </script>
 </body>
