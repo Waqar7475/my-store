@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>AceRDP — High-Performance VPS & RDP Hosting</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -12,7 +12,7 @@
   --red:#e5091a;--red2:#ff2d3d;--red3:rgba(229,9,26,.12);
   --bd:rgba(229,9,26,.18);--bd2:rgba(255,255,255,.06);
   --t:#ffffff;--t2:#888;--t3:#3a3a3a;
-  --ff:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --ff:'Rajdhani',sans-serif;--fb:'Inter',sans-serif;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--t);font-family:var(--fb);overflow-x:hidden;cursor:none;}
@@ -159,30 +159,80 @@ nav.dark{background:rgba(6,6,6,.97);}
 
 .pc{
   background:rgba(10,2,2,.92);
-  border:1px solid rgba(229,9,26,.15);
+  border:1px solid transparent;
   border-radius:9px;
   padding:1.1rem 1rem;
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
-  transition:all .32s cubic-bezier(.23,1,.32,1);
+  transition:transform .32s cubic-bezier(.23,1,.32,1),box-shadow .32s;
   height:100%;
+  /* Static colored border as base */
+  box-shadow:inset 0 0 0 1px rgba(229,9,26,.18);
 }
-.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s;}
-.pc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% -10%,rgba(229,9,26,.09),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
-.pc:hover{border-color:rgba(229,9,26,.5);transform:translateY(-7px);box-shadow:0 22px 55px rgba(0,0,0,.8),0 0 30px rgba(229,9,26,.07);}
-.pc:hover::before,.pc:hover::after{opacity:1;}
-.pc-hot{border-color:rgba(229,9,26,.4)!important;}
-.pc-hot::after{opacity:.5!important;}
-.pc-badge{position:absolute;top:0;right:10px;background:var(--red);color:#fff;font-family:var(--ff);font-size:.48rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .55rem;border-radius:0 0 5px 5px;box-shadow:0 0 12px rgba(229,9,26,.5);}
-.pc-tier{font-family:var(--ff);font-size:.54rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.15rem;}
-.pc-loc{font-size:.65rem;color:var(--t2);margin-bottom:.5rem;}
-.pc-price{font-family:var(--ff);font-size:1.8rem;font-weight:800;color:#fff;line-height:1;letter-spacing:-1px;margin-bottom:.8rem;}
+/* Rotating conic-gradient border overlay */
+.pc-border-spin{
+  position:absolute;inset:-1px;border-radius:10px;
+  background:conic-gradient(from var(--a,0deg),
+    transparent 0deg,transparent 80deg,
+    rgba(229,9,26,.9) 100deg,rgba(255,100,100,1) 130deg,
+    rgba(229,9,26,.9) 160deg,transparent 180deg,transparent 360deg);
+  animation:spinBorder 4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  padding:1px;
+  opacity:.5;
+  transition:opacity .3s;
+  pointer-events:none;z-index:1;
+}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false;}
+@keyframes spinBorder{to{--a:360deg;}}
+.pc:hover .pc-border-spin{opacity:1;}
+.pc:hover{transform:translateY(-7px);box-shadow:inset 0 0 0 1px rgba(229,9,26,.5),0 22px 55px rgba(0,0,0,.8),0 0 35px rgba(229,9,26,.1);}
+/* inner glow on hover */
+.pc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% -5%,rgba(229,9,26,.1),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:0;}
+.pc:hover::after{opacity:1;}
+/* always-on ambient pulse */
+@keyframes ambientPulse{
+  0%,100%{box-shadow:inset 0 0 0 1px rgba(229,9,26,.18),0 0 8px rgba(229,9,26,.04);}
+  50%{box-shadow:inset 0 0 0 1px rgba(229,9,26,.32),0 0 18px rgba(229,9,26,.1);}
+}
+.pc{animation:ambientPulse 3.5s ease-in-out infinite;}
+.pc:nth-child(2){animation-delay:.4s;}
+.pc:nth-child(3){animation-delay:.8s;}
+.pc:nth-child(4){animation-delay:1.2s;}
+.pc-hot{animation:ambientPulseHot 2.5s ease-in-out infinite!important;}
+@keyframes ambientPulseHot{
+  0%,100%{box-shadow:inset 0 0 0 1px rgba(229,9,26,.4),0 0 15px rgba(229,9,26,.08);}
+  50%{box-shadow:inset 0 0 0 1px rgba(229,9,26,.75),0 0 28px rgba(229,9,26,.18);}
+}
+.pc-badge{position:absolute;top:0;right:10px;background:var(--red);color:#fff;font-family:var(--ff);font-size:.48rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .55rem;border-radius:0 0 5px 5px;box-shadow:0 0 12px rgba(229,9,26,.5);z-index:2;}
+.pc-tier{font-family:var(--ff);font-size:.54rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:.15rem;position:relative;z-index:2;}
+.pc-loc{font-size:.65rem;color:var(--t2);margin-bottom:.5rem;position:relative;z-index:2;}
+.pc-price{font-family:var(--ff);font-size:1.8rem;font-weight:800;color:#fff;line-height:1;letter-spacing:-1px;margin-bottom:.8rem;position:relative;z-index:2;}
 .pc-price small{font-size:.7rem;font-weight:400;color:var(--t2);letter-spacing:0;}
-.pc-specs{list-style:none;display:flex;flex-direction:column;gap:.3rem;flex:1;margin-bottom:.85rem;}
+.pc-specs{list-style:none;display:flex;flex-direction:column;gap:.3rem;flex:1;margin-bottom:.85rem;position:relative;z-index:2;}
 .pc-specs li{display:flex;align-items:center;gap:.45rem;font-size:.67rem;color:var(--t2);line-height:1.3;}
-.pc-specs li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--red);box-shadow:0 0 5px rgba(229,9,26,.8);flex-shrink:0;}
-.pc-btn{display:block;text-align:center;padding:.58rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--ff);font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .22s;letter-spacing:.5px;}
-.pc-btn:hover{background:var(--red2);box-shadow:0 0 20px rgba(229,9,26,.5);color:#fff;}
+/* LIVE PULSING SPEC DOTS — each dot pulses with stagger */
+.pc-specs li::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:rgba(229,9,26,.6);flex-shrink:0;
+  animation:specPulse 2.2s ease-in-out infinite;
+}
+.pc-specs li:nth-child(1)::before{animation-delay:0s;}
+.pc-specs li:nth-child(2)::before{animation-delay:.35s;}
+.pc-specs li:nth-child(3)::before{animation-delay:.7s;}
+.pc-specs li:nth-child(4)::before{animation-delay:1.05s;}
+.pc-specs li:nth-child(5)::before{animation-delay:1.4s;}
+@keyframes specPulse{
+  0%,100%{background:rgba(229,9,26,.45);box-shadow:0 0 0 0 rgba(229,9,26,0);transform:scale(1);}
+  45%{background:rgba(229,9,26,1);box-shadow:0 0 0 3px rgba(229,9,26,0),0 0 7px rgba(229,9,26,.7);transform:scale(1.3);}
+  55%{background:rgba(229,9,26,1);box-shadow:0 0 0 4px rgba(229,9,26,0);transform:scale(1.15);}
+}
+.pc-btn{display:block;text-align:center;padding:.58rem;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:var(--ff);font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .22s;letter-spacing:.5px;position:relative;z-index:2;}
+.pc-btn:hover{background:var(--red2);box-shadow:0 0 22px rgba(229,9,26,.55);color:#fff;}
 @media(max-width:480px){.pc-price{font-size:1.4rem;}.pc-specs li{font-size:.62rem;}.pc{padding:.9rem .8rem;}}
 
 /* ── STATS ── */
@@ -447,26 +497,26 @@ function fe(c){return{'auth/email-already-in-use':'Email already registered','au
 
     <!-- ROW 1: 4 plans -->
     <div class="plans rv" style="margin-bottom:.75rem;">
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Bronze</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€12 <small>/month</small></p>
         <ul class="pc-specs"><li>2 Cores</li><li>6 GB DDR5 RAM</li><li>40 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Silver</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€20 <small>/month</small></p>
         <ul class="pc-specs"><li>4 Cores</li><li>8 GB DDR5 RAM</li><li>60 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc pc-hot">
+      <div class="pc pc-hot"><div class="pc-border-spin"></div>
         <span class="pc-badge">Popular</span>
         <p class="pc-tier">Gold</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€30 <small>/month</small></p>
         <ul class="pc-specs"><li>6 Cores</li><li>12 GB DDR5 RAM</li><li>80 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Platinum</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€40 <small>/month</small></p>
         <ul class="pc-specs"><li>8 Cores</li><li>16 GB DDR5 RAM</li><li>100 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
@@ -476,25 +526,25 @@ function fe(c){return{'auth/email-already-in-use':'Email already registered','au
 
     <!-- ROW 2: 4 plans -->
     <div class="plans rv rv2">
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Diamond</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€50 <small>/month</small></p>
         <ul class="pc-specs"><li>10 Cores</li><li>20 GB DDR5 RAM</li><li>120 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Titanium</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€60 <small>/month</small></p>
         <ul class="pc-specs"><li>12 Cores</li><li>24 GB DDR5 RAM</li><li>140 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc">
+      <div class="pc"><div class="pc-border-spin"></div>
         <p class="pc-tier">Obsidian</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€70 <small>/month</small></p>
         <ul class="pc-specs"><li>14 Cores</li><li>28 GB DDR5 RAM</li><li>160 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
         <a href="#" class="pc-btn">Buy Now</a>
       </div>
-      <div class="pc pc-hot">
+      <div class="pc pc-hot"><div class="pc-border-spin"></div>
         <p class="pc-tier">Legend</p><p class="pc-loc">🇺🇸 US</p>
         <p class="pc-price">€80 <small>/month</small></p>
         <ul class="pc-specs"><li>16 Cores</li><li>32 GB DDR5 RAM</li><li>180 GB NVMe</li><li>10 Gbit Uplink</li><li>4.5 GHz (5.7 Turbo)</li></ul>
